@@ -18,7 +18,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppDeplo
   # Properties not explicitly overwritten in the Scenarios can take any values compliant with the schema
     And the request body is set by default to a request body compliant with the schema at "/components/schemas/AppDeploymentManifest"
   # Success scenarios
-@EdgeCloud_EAM_createAppDeployment_01_generic_success_scenario
+  @EdgeCloud_EAM_createAppDeployment_01_generic_success_scenario
   Scenario: Instantiate an Application with just mandatory parameters ("appDeploymentName", "appId" and "edgeCloudZoneId" in body)
     Given an application has already been submitted by operation submitApp
     And the request body property "$.appDeploymentName" is set to a valid name
@@ -30,7 +30,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppDeplo
     And the response header "x-correlator" has the same value as the request header "x-correlator"
     And the response body contains the "appDeploymentId"
     And the process of instantiating the app starts in all available edge cloud zones in the region provided
-@EdgeCloud_EAM_createAppDeployment_02_success_scenario_optional_parameters
+  @EdgeCloud_EAM_createAppDeployment_02_success_scenario_optional_parameters
   Scenario: Instantiate an Application with mandatory parameters ("appDeploymentName", "appId" and "edgeCloudZoneId" in body) and optional parameter ("KubernetesClusterRef")
     Given an application has already been submitted by operation submitApp
     And the request body property "$.appDeploymentName" is set to a valid name
@@ -45,7 +45,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppDeplo
     And the process of instantiating the app starts only in given region and edge cloud zone
   # Error scenarios
   #Error 409
-@EdgeCloud_EAM_createAppDeployment_409.conflict
+  @EdgeCloud_EAM_createAppDeployment_409.conflict
   Scenario: Instantiate an existing application with mandatory parameters ("appDeploymentName", "appId" and "edgeCloudZoneId" in body)
     Given there are running instances of the app
     And the request body property "$.appDeploymentName" is set to a valid name
@@ -59,7 +59,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppDeplo
     And the response property "$.code" is "CONFLICT"
     And the response property "$.message" contains a user friendly text
   # Error 400
-@EdgeCloud_eam_createAppDeployment_400.1_schema_not_compliant
+  @EdgeCloud_eam_createAppDeployment_400.1_schema_not_compliant
   Scenario: Invalid Argument. Generic Syntax Exception
     Given the request body is set to any value which is not compliant with the schema at "/components/schemas/AppInstanceManifest"
     When the request "createAppDeployment" is sent
@@ -69,7 +69,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppDeplo
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
-@EdgeCloud_eam_createAppDeployment_400.2_no_request_body
+  @EdgeCloud_eam_createAppDeployment_400.2_no_request_body
   Scenario: Missing request body
     Given the request body is not included
     When the request "createAppDeployment" is sent
@@ -79,7 +79,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppDeplo
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
-@EdgeCloud_eam_createAppDeployment_400.3_empty_request_body
+  @EdgeCloud_eam_createAppDeployment_400.3_empty_request_body
   Scenario: Empty object as request body
     Given the request body is set to {}
     When the request "createAppDeployment" is sent
@@ -89,7 +89,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppDeplo
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
-@EdgeCloud_eam_createAppDeployment_400.4_empty_property
+  @EdgeCloud_eam_createAppDeployment_400.4_empty_property
   Scenario: Error response for empty property in request body
     Given the request body property "<required_property>" is set to {}
     When the request "createAppDeployment" is sent
@@ -100,7 +100,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppDeplo
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
   # Errors 403
-@EdgeCloud_eam_createAppDeployment_403.1_missing_access_token_scope
+  @EdgeCloud_eam_createAppDeployment_403.1_missing_access_token_scope
   Scenario: Missing access token scope
     Given the header "Authorization" is set to an access token that does not include the required scope
     When the request "createAppDeployment" is sent
