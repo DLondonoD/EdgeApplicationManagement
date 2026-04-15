@@ -16,7 +16,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getClusters
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
   # Success scenarios
   #/clusters	GET 200
-@EdgeCloud_EAM_getClusters_01_generic_success_scenario
+  @EdgeCloud_EAM_getClusters_01_generic_success_scenario
   Scenario: Get information of existing clusters
     Given There are at least one cluster available
     When the request "getClusters" is sent
@@ -26,7 +26,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getClusters
     And A list of clusters is returned
     And the response body complies with the OAS schema at "/components/schemas/ClusterInfo"
   #/clusters	GET	200	filtered by region
-@EdgeCloud_EAM_getClusters_02_generic_success_scenario_filtered_by_region
+  @EdgeCloud_EAM_getClusters_02_generic_success_scenario_filtered_by_region
   Scenario: Get information of existing clusters with optional parameters ("region")
     Given There are at least one cluster available
     And the path parameter "$.region" is set to a valid region
@@ -37,7 +37,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getClusters
     And information of clusters of "$.region" is returned
     And the response body complies with the OAS schema at "/components/schemas/ClusterInfo"
   #/clusters	GET	200	filtered by edgeCloudZoneId
-@EdgeCloud_EAM_getClusters_03_generic_success_scenario_filtered_by_edgeCloudZone
+  @EdgeCloud_EAM_getClusters_03_generic_success_scenario_filtered_by_edgeCloudZone
   Scenario: Get information of existing clusters with optional parameters ("edgeCloudZoneId")
     Given There are at least one cluster available
     And the path parameter "$.edgeCloudZoneId" is set to a valid edgeCloudZoneId
@@ -48,7 +48,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getClusters
     And information of clusters of "$.edgeCloudZoneId" is returned
     And the response body complies with the OAS schema at "/components/schemas/ClusterInfo"
   #/clusters	GET	200	filtered by clusterRef
-@EdgeCloud_EAM_getClusters_04_generic_success_scenario_filtered_by_clusterRef
+  @EdgeCloud_EAM_getClusters_04_generic_success_scenario_filtered_by_clusterRef
   Scenario: Get information of existing clusters with optional parameters ("edgeCloudZoneId")
     Given There are at least one cluster available
     And the path parameter "$.clusterRef" is set to a valid clusterRef
@@ -60,7 +60,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getClusters
     And the response body complies with the OAS schema at "/components/schemas/ClusterInfo"
   #Errors
   #/clusters	GET	404
-@EdgeCloud_EAM_getClusters_404.1_not_found
+  @EdgeCloud_EAM_getClusters_404.1_not_found
   Scenario: Get information of existing clusters with optional parameters ("region")
     Given the path parameter "$.region" is set to an invalid region
     When When the request "getClusters" is sent
@@ -71,7 +71,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getClusters
     And the response property "$.code" is "NOT_FOUND"
     And the response property "$.message" contains a user friendly text
   # Errors 403
-@EdgeCloud_EAM_getClusters_403.1_missing_access_token_scope
+  @EdgeCloud_EAM_getClusters_403.1_missing_access_token_scope
   Scenario: Missing access token scope
     Given the header "Authorization" is set to an access token that does not include the required scope
     When When the request "getClusters" is sent
