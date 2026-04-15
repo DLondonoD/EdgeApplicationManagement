@@ -15,7 +15,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteApp
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
   # Success scenarios
-@EdgeCloud_EAM_deleteApp_01_generic_success_scenario
+  @EdgeCloud_EAM_deleteApp_01_generic_success_scenario
   Scenario: Delete all the information and content related to an Application with mandatory parameter ("appId")
     Given there are no running instances of the app
     And the path parameter "$.appId" is set to a valid application ID
@@ -26,7 +26,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteApp
     And the application information is deleted
   # Errors
   # Error 409
-@EdgeCloud_EAM_deleteApp_409.1_conflict
+  @EdgeCloud_EAM_deleteApp_409.1_conflict
   Scenario: Error response for deleting an application with a running instance
     Given there is at least one running instance of the app
     And the path parameter "$.appId" is set to a valid application ID
@@ -38,7 +38,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteApp
     And the response property "$.code" is "CONFLICT"
     And the response property "$.message" contains a user friendly text
   # Error 404
-@EdgeCloud_EAM_deleteApp_404.1_invalid_parameter
+  @EdgeCloud_EAM_deleteApp_404.1_invalid_parameter
   Scenario: Error response for deleting a non-existing app
     Given there are running instances of the app
     And the path parameter "$.appId" is set to an invalid application ID
@@ -50,7 +50,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteApp
     And the response property "$.code" is "NOT_FOUND"
     And the response property "$.message" contains a user friendly text
   # Errors 403
-@EdgeCloud_eam_deleteApp_403.1_missing_access_token_scope
+  @EdgeCloud_eam_deleteApp_403.1_missing_access_token_scope
   Scenario: Missing access token scope
     Given the header "Authorization" is set to an access token that does not include the required scope
     When the request "deleteApp" is sent
