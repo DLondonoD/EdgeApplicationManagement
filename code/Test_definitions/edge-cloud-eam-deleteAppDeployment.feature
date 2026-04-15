@@ -16,7 +16,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteAppDeplo
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
   # Success scenarios
-@EdgeCloud_EAM_deleteAppDeployment_01_generic_success_scenario_async
+  @EdgeCloud_EAM_deleteAppDeployment_01_generic_success_scenario_async
   Scenario: Delete a running instance of an application within an Edge Cloud Zone with mandatory parameter ("appDeploymentId")
     Given there are application instances running
     And the request path parameter "$.appDeploymentIdd" is set to a valid application ID
@@ -27,7 +27,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteAppDeplo
     And the application instance termination initiated
   # Errors
   # Error 404
-@EdgeCloud_EAM_deleteAppDeployment_404.1_invalid_parameter
+  @EdgeCloud_EAM_deleteAppDeployment_404.1_invalid_parameter
   Scenario: Delete a running instance of an application within an Edge Cloud Zone with mandatory, and non-existing, parameter ("appDeploymentId")
     Given there are application instances running
     And the path parameter "$.appDeploymentId" is set to an invalid application instance ID
@@ -39,7 +39,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteAppDeplo
     And the response property "$.code" is "NOT_FOUND"
     And the response property "$.message" contains a user friendly text
   # Error 403
-@EdgeCloud_eam_deleteAppDeployment_403.1_missing_access_token_scope
+  @EdgeCloud_eam_deleteAppDeployment_403.1_missing_access_token_scope
   Scenario: Missing access token scope
     Given the header "Authorization" is set to an access token that does not include the required scope
     When the request "deleteAppDeployment" is sent
@@ -50,7 +50,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteAppDeplo
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
   # Error 410
-@EdgeCloud_eam_deleteAppDeployment_410.1_gone
+  @EdgeCloud_eam_deleteAppDeployment_410.1_gone
   Scenario: Delete an already removed deployment
     Given the request path parameter "$.appDeploymentId" is set to an already removed Deployment ID
     When the request "deleteAppDeployment" is sent
