@@ -18,7 +18,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation updateAppDeplo
   # Properties not explicitly overwritten in the Scenarios can take any values compliant with the schema
     And the request body is set by default to a request body compliant with the schema at "/components/schemas/AppDeploymentManifest"
   # Success scenarios
-@EdgeCloud_EAM_updateAppDeployment_01_generic_success_scenario
+  @EdgeCloud_EAM_updateAppDeployment_01_generic_success_scenario
   Scenario: Update a running instance of an application within an Edge Cloud Zone with mandatory parameter ("appDeploymentId")
     Given there are application instances running
     And the request path parameter "$.appDeploymentIdd" is set to a valid application ID
@@ -30,7 +30,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation updateAppDeplo
     And the response body complies with the OAS schema at "/components/schemas/AppInstanceInfo"
   # Errors
   # Error 404
-@EdgeCloud_EAM_updateAppDeployment_404.1_invalid_parameter
+  @EdgeCloud_EAM_updateAppDeployment_404.1_invalid_parameter
   Scenario: Update a running instance of an application within an Edge Cloud Zone with mandatory, and non-existing, parameter ("appDeploymentId")
     Given there are application instances running
     And the path parameter "$.appDeploymentId" is set to an invalid application instance ID
@@ -42,7 +42,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation updateAppDeplo
     And the response property "$.code" is "NOT_FOUND"
     And the response property "$.message" contains a user friendly text
   # Error 403
-@EdgeCloud_eam_updateAppDeployment_403.1_missing_access_token_scope
+  @EdgeCloud_eam_updateAppDeployment_403.1_missing_access_token_scope
   Scenario: Missing access token scope
     Given the header "Authorization" is set to an access token that does not include the required scope
     When the request "updateAppDeployment" is sent
@@ -54,7 +54,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation updateAppDeplo
     And the response property "$.message" contains a user friendly text
   # Error 409, Conflict: What is the required scenario to get this error?
   # Error 410
-@EdgeCloud_eam_updateAppDeployment_410.1_gone
+  @EdgeCloud_eam_updateAppDeployment_410.1_gone
   Scenario: Update an already removed deployment
     Given the request path parameter "$.appDeploymentId" is set to an already removed Deployment ID
     When the request "updateAppDeployment" is sent
