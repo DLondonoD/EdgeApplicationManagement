@@ -17,7 +17,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation submitApp
   # Properties not explicitly overwritten in the Scenarios can take any values compliant with the schema
     And the request body is set by default to a request body compliant with the schema at "/components/schemas/AppManifest"
   # Success scenarios
-@edgeCloud_eam_submitApp_01_generic_success_scenario
+  @EdgeCloud_eam_submitApp_01_generic_success_scenario
   Scenario: Common validations for any success scenario. Submit an App with mandatory parameters
   # Valid testing device and default request body compliant with the schema
     Given A valid application to be submitted
@@ -36,7 +36,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation submitApp
     And the response property "$.appId" is returned
   # Error scenarios
   # Error 409
-@EdgeCloud_eam_submitApp_409.1_conflict
+  @EdgeCloud_eam_submitApp_409.1_conflict
   Scenario: Error response when an application is already submitted
     Given an AppManifest request body referencing an already submitted application
     And the request body property "$.name" is set to an existing application name
@@ -48,7 +48,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation submitApp
     And the response property "$.code" is "CONFLICT"
     And the response property "$.message" contains a user friendly text
   # Error 400
-@EdgeCloud_eam_submitApp_400.1_schema_not_compliant
+  @EdgeCloud_eam_submitApp_400.1_schema_not_compliant
   Scenario: Invalid Argument. Generic Syntax Exception
     Given the request body is set to any value which is not compliant with the schema at "/components/schemas/AppManifest"
     When the request "submitApp" is sent
@@ -58,7 +58,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation submitApp
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
-@EdgeCloud_eam_submitApp_400.2_no_request_body
+  @EdgeCloud_eam_submitApp_400.2_no_request_body
   Scenario: Missing request body
     Given the request body is not included
     When the request "submitApp" is sent
@@ -68,7 +68,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation submitApp
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
-@EdgeCloud_eam_submitApp_400.3_empty_request_body
+  @EdgeCloud_eam_submitApp_400.3_empty_request_body
   Scenario: Empty object as request body
     Given the request body is set to {}
     When the request "submitApp" is sent
@@ -78,7 +78,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation submitApp
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
-@EdgeCloud_eam_submitApp_400.4_empty_property
+  @EdgeCloud_eam_submitApp_400.4_empty_property
   Scenario: Error response for empty property in request body
     Given the request body property "<required_property>" is set to {}
     When the request "submitApp" is sent
@@ -89,7 +89,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation submitApp
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
   # Errors 403
-@EdgeCloud_eam_submitApp_403.1_missing_access_token_scope
+  @EdgeCloud_eam_submitApp_403.1_missing_access_token_scope
   Scenario: Missing access token scope
     Given the header "Authorization" is set to an access token that does not include the required scope
     When the request "submitApp" is sent
