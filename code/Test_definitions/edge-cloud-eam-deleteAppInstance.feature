@@ -17,7 +17,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteAppInsta
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
   # Success scenarios
   @EdgeCloud_EAM_deleteAppInstance_01_generic_success_scenario_async
-  Scenario: Delete a running instance of an application within an Edge Cloud Zone with mandatory parameter ("appInstanceId")
+  Scenario: Delete a running instance of an application within an Edge Cloud Zone with mandatory parameter ("appInstanceId") - async
     Given there are application instances running
     And the request path parameter "$.appInstanceId" is set to a valid application ID
     When the request "deleteApp" is sent
@@ -26,7 +26,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteAppInsta
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the application instance termination initiated
   @EdgeCloud_EAM_deleteAppInstance_02_generic_success_scenario_sync
-  Scenario: Delete a running instance of an application within an Edge Cloud Zone with mandatory parameter ("appInstanceId")
+  Scenario: Delete a running instance of an application within an Edge Cloud Zone with mandatory parameter ("appInstanceId") - sync
     Given there are application instances running
     And the request path parameter "$.appInstanceId" is set to a valid application ID
     When the request "deleteApp" is sent
