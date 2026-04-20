@@ -1110,7 +1110,7 @@ components:
           minLength: 1
           maxLength: 1024
           description: Identifier of this event, that must be unique in the source context
-          example: "123e4567-e89b-12d3-a456-426614174000"     
+          example: "123e4567-e89b-12d3-a456-426614174000"
         source:
           $ref: "#/components/schemas/Source"
         type:
@@ -1182,7 +1182,7 @@ components:
           * /cloudevents/spec/pull/123
           * 1-555-123-4567
       example: "https://notificationSendServer12.example.com"
-    
+
     CloudEventStatus:
       description: |
         Status of the application instance or deployment
