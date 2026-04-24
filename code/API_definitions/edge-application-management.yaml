@@ -1771,7 +1771,6 @@ components:
           - monitoring
           - ingress
         uniqueItems: true
-        maxItems: 2
         default: []
         example:
         - monitoring
