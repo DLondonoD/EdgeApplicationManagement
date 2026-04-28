@@ -934,7 +934,7 @@ paths:
         - Edge Cloud
       summary: Retrieve a list of the provider's Edge Cloud Zones and their status
       description: |
-        List of the operators Edge Cloud Zones and their
+        List of the provider's Edge Cloud Zones and their
         status, ordering the results by location and filtering by
         status (active/inactive/unknown)
       operationId: getEdgeCloudZones
