@@ -932,7 +932,7 @@ paths:
             - edge-application-management:edge-cloud-zones:read
       tags:
         - Edge Cloud
-      summary: Retrieve a list of the operators Edge Cloud Zones and their status
+      summary: Retrieve a list of the provider's Edge Cloud Zones and their status
       description: |
         List of the operators Edge Cloud Zones and their
         status, ordering the results by location and filtering by
