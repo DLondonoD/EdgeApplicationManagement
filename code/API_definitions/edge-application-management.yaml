@@ -693,7 +693,6 @@ paths:
                 maxItems: 100
                 items:
                   $ref: "#/components/schemas/AppDeploymentInfo"
-        
         "400":
           $ref: "#/components/responses/400"
         "401":
@@ -983,7 +982,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/EdgeCloudZones"
-        
         "400":
           $ref: "#/components/responses/400"
         "401":
