@@ -1023,6 +1023,9 @@ components:
 
   callbacks:
     onAppInstanceStatusChange:
+      description: |
+        Callback sent to the subscriber's sink URL when the status of an application instance changes.
+        The server posts a CloudEvent notification to the URL provided in the subscription request's `sink` field.
       "{$request.body#/subscriptionRequest/sink}":
         post:
           tags:
@@ -1065,6 +1068,9 @@ components:
               $ref: "#/components/responses/429"
 
     onAppDeploymentStatusChange:
+      description: |
+        Callback sent to the subscriber's sink URL when the status of an application deployment changes.
+        The server posts a CloudEvent notification to the URL provided in the subscription request's `sink` field.
       "{$request.body#/subscriptionRequest/sink}":
         post:
           tags:
