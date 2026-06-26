@@ -1519,6 +1519,7 @@ components:
             checksum:
               type: string
               maxLength: 128
+              pattern: "^(?:[A-Fa-f0-9]{32}|[A-Fa-f0-9]{64})$"
               description: |
                 MD5 checksum for VM and file-based images, sha256
                 digest for containers
@@ -1642,6 +1643,7 @@ components:
         version:
           type: string
           maxLength: 64
+          pattern: ^v?\\d+\\.\\d+(?:\\.\\d+)?(?:[-+][0-9A-Za-z.-]+)?$
           description: Kubernetes version of the cluster.
         nodePools:
           description: Node Pools in the cluster.
@@ -1728,6 +1730,7 @@ components:
 
     Fqdn:
       type: string
+      format: hostname
       maxLength: 253
       description: |
         Full qualified domain name of an application instance
@@ -2109,6 +2112,7 @@ components:
           maxLength: 64
           description: Minimum Kubernetes Version.
           example: "1.29"
+          pattern: ^v?\\d+\\.\\d+(?:\\.\\d+)?(?:[-+][0-9A-Za-z.-]+)?$
         additionalStorage:
           type: string
           maxLength: 32
@@ -2320,6 +2324,7 @@ components:
 
     Uri:
       type: string
+      format: uri
       maxLength: 2048
       example: https://charts.bitnami.com/bitnami/helm/example-chart:0.1.0
       description: |
