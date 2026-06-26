@@ -239,11 +239,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/SubmittedApp"
         "400":
-          $ref: "#/components/responses/400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
-          $ref: "#/components/responses/401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "409":
           description: Conflict
           content:
@@ -255,11 +255,11 @@ paths:
                 code: ALREADY_EXISTS
                 message: "App already exists"
         "500":
-          $ref: "#/components/responses/500"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "501":
-          $ref: "#/components/responses/501"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic501"
         "503":
-          $ref: "#/components/responses/503"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
     get:
       security:
         - openId:
@@ -287,15 +287,15 @@ paths:
                 items:
                   $ref: "#/components/schemas/AppManifest"
         "400":
-          $ref: "#/components/responses/400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
-          $ref: "#/components/responses/401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "500":
-          $ref: "#/components/responses/500"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "503":
-          $ref: "#/components/responses/503"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
 
   /apps/{appId}:
     get:
@@ -334,17 +334,17 @@ paths:
                   appManifest:
                     $ref: "#/components/schemas/AppManifest"
         "400":
-          $ref: "#/components/responses/400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
-          $ref: "#/components/responses/401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "404":
-          $ref: "#/components/responses/404"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic404"
         "500":
-          $ref: "#/components/responses/500"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "503":
-          $ref: "#/components/responses/503"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
     delete:
       security:
         - openId:
@@ -375,13 +375,13 @@ paths:
         "204":
           description: App deleted
         "400":
-          $ref: "#/components/responses/400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
-          $ref: "#/components/responses/401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "404":
-          $ref: "#/components/responses/404"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic404"
         "409":
           description: Conflict
           content:
@@ -393,9 +393,9 @@ paths:
                 code: ABORTED
                 message: "App with a running application instance cannot be deleted"
         "500":
-          $ref: "#/components/responses/500"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "503":
-          $ref: "#/components/responses/503"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
 
   /appinstances:
     post:
@@ -452,11 +452,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppInstanceInfo"
         "400":
-          $ref: "#/components/responses/400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
-          $ref: "#/components/responses/401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "409":
           description: Conflict
           content:
@@ -468,11 +468,11 @@ paths:
                 code: ALREADY_EXISTS
                 message: "Application already instantiated in the given Edge Cloud Zone"
         "500":
-          $ref: "#/components/responses/500"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "501":
-          $ref: "#/components/responses/501"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic501"
         "503":
-          $ref: "#/components/responses/503"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
       callbacks:
         onAppInstanceStatusChange:
           $ref: "#/components/callbacks/onAppInstanceStatusChange"
@@ -533,15 +533,15 @@ paths:
                 items:
                   $ref: "#/components/schemas/AppInstanceInfo"
         "400":
-          $ref: "#/components/responses/400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
-          $ref: "#/components/responses/401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "500":
-          $ref: "#/components/responses/500"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "503":
-          $ref: "#/components/responses/503"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
   /appinstances/{appInstanceId}:
     delete:
       security:
@@ -575,17 +575,17 @@ paths:
         "204":
           description: Application Instance Deleted
         "400":
-          $ref: "#/components/responses/400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
-          $ref: "#/components/responses/401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "404":
-          $ref: "#/components/responses/404"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic404"
         "500":
-          $ref: "#/components/responses/500"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "503":
-          $ref: "#/components/responses/503"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
 
   /deployments:
     post:
@@ -644,11 +644,11 @@ paths:
                   appDeploymentId:
                     $ref: "#/components/schemas/AppDeploymentId"
         "400":
-          $ref: "#/components/responses/400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
-          $ref: "#/components/responses/401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "409":
           description: Conflict
           content:
@@ -660,11 +660,11 @@ paths:
                 code: ALREADY_EXISTS
                 message: "Deployment already exists"
         "500":
-          $ref: "#/components/responses/500"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "501":
-          $ref: "#/components/responses/501"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic501"
         "503":
-          $ref: "#/components/responses/503"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
       callbacks:
         onAppDeploymentStatusChange:
           $ref: "#/components/callbacks/onAppDeploymentStatusChange"
@@ -717,17 +717,17 @@ paths:
                 items:
                   $ref: "#/components/schemas/AppDeploymentInfo"
         "400":
-          $ref: "#/components/responses/400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
-          $ref: "#/components/responses/401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "410":
-          $ref: "#/components/responses/410"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic410"
         "500":
-          $ref: "#/components/responses/500"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "503":
-          $ref: "#/components/responses/503"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
   /deployments/{appDeploymentId}:
     delete:
       security:
@@ -758,19 +758,19 @@ paths:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
         "400":
-          $ref: "#/components/responses/400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
-          $ref: "#/components/responses/401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "404":
-          $ref: "#/components/responses/404"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic404"
         "410":
-          $ref: "#/components/responses/410"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic410"
         "500":
-          $ref: "#/components/responses/500"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "503":
-          $ref: "#/components/responses/503"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
     patch:
       security:
         - openId:
@@ -877,15 +877,15 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppDeploymentInfo"
         "400":
-          $ref: "#/components/responses/400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
-          $ref: "#/components/responses/401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "404":
-          $ref: "#/components/responses/404"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic404"
         "410":
-          $ref: "#/components/responses/410"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic410"
         "409":
           description: Conflict
           content:
@@ -897,9 +897,9 @@ paths:
                 code: ABORTED
                 message: "Update conflict"
         "500":
-          $ref: "#/components/responses/500"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "503":
-          $ref: "#/components/responses/503"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
 
   /clusters:
     get:
@@ -955,15 +955,15 @@ paths:
                 items:
                   $ref: "#/components/schemas/ClusterInfo"
         "400":
-          $ref: "#/components/responses/400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
-          $ref: "#/components/responses/401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "500":
-          $ref: "#/components/responses/500"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "503":
-          $ref: "#/components/responses/503"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
   /edge-cloud-zones:
     get:
       security:
@@ -1006,15 +1006,15 @@ paths:
               schema:
                 $ref: "#/components/schemas/EdgeCloudZones"
         "400":
-          $ref: "#/components/responses/400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
-          $ref: "#/components/responses/401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "500":
-          $ref: "#/components/responses/500"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "503":
-          $ref: "#/components/responses/503"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
 components:
   securitySchemes:
     openId:
@@ -1078,15 +1078,15 @@ components:
                 x-correlator:
                   $ref: "#/components/headers/x-correlator"
             "400":
-              $ref: "#/components/responses/400"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
             "401":
-              $ref: "#/components/responses/401"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
             "403":
-              $ref: "#/components/responses/403"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
             "410":
-              $ref: "#/components/responses/410"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic410"
             "429":
-              $ref: "#/components/responses/429"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic429"
 
     onAppDeploymentStatusChange:
       "{$request.body#/subscriptionRequest/sink}":
@@ -1123,15 +1123,15 @@ components:
                 x-correlator:
                   $ref: "#/components/headers/x-correlator"
             "400":
-              $ref: "#/components/responses/400"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
             "401":
-              $ref: "#/components/responses/401"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
             "403":
-              $ref: "#/components/responses/403"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
             "410":
-              $ref: "#/components/responses/410"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic410"
             "429":
-              $ref: "#/components/responses/429"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic429"
 
   schemas:
     AccessTokenCredential:
@@ -2334,23 +2334,3 @@ components:
 
     XCorrelator:
       $ref: "../common/CAMARA_common.yaml#/components/schemas/XCorrelator"
-
-  responses:
-    "400":
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
-    "401":
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
-    "403":
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
-    "404":
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic404"
-    "410":
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic410"
-    "429":
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic429"
-    "500":
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-    "501":
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic501"
-    "503":
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
