@@ -1149,7 +1149,8 @@ components:
                 Access Token granting access to the POST operation to create
                 notification
               type: string
-              maxLength: 8192
+              writeOnly: true
+              maxLength: 4096
             accessTokenExpiresUtc:
               type: string
               format: date-time
@@ -1501,6 +1502,7 @@ components:
             credentials:
               type: string
               maxLength: 2048
+              writeOnly: true
               description: |
                 Password or personal access token created by
                 developer to acces the app repository. API users can generate
