@@ -256,8 +256,6 @@ paths:
                 message: "App already exists"
         "500":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "501":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic501"
         "503":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
     get:
@@ -390,7 +388,7 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
               example:
                 status: 409
-                code: ABORTED
+                code: INCOMPATIBLE_STATE
                 message: "App with a running application instance cannot be deleted"
         "500":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
@@ -469,8 +467,6 @@ paths:
                 message: "Application already instantiated in the given Edge Cloud Zone"
         "500":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "501":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic501"
         "503":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
       callbacks:
@@ -661,8 +657,6 @@ paths:
                 message: "Deployment already exists"
         "500":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "501":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic501"
         "503":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
       callbacks:
@@ -722,8 +716,8 @@ paths:
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
-        "410":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic410"
+        "404":
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic404"
         "500":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "503":
@@ -765,8 +759,6 @@ paths:
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "404":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic404"
-        "410":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic410"
         "500":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "503":
@@ -884,8 +876,6 @@ paths:
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "404":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic404"
-        "410":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic410"
         "409":
           description: Conflict
           content:
