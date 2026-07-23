@@ -27,7 +27,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getApp
     Then response code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/AppManifest"
+    And the response body complies with the OAS schema at "/components/schemas/AppManifestInfo"
     And the response property "$name" has the value provided for submitApp
     And the response property "$appProvider" has the value provided for submitApp
     And the response property "$version" has the value provided for submitApp
