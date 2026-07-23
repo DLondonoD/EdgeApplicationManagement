@@ -503,15 +503,6 @@ paths:
           required: false
           schema:
             $ref: "#/components/schemas/AppId"
-        - name: appInstanceId
-          description: |
-            A globally unique identifier associated with a running
-            instance of an application within an specific Edge Cloud Zone.
-            Edge Cloud Provider generates this identifier.
-          in: query
-          required: false
-          schema:
-            $ref: "#/components/schemas/AppInstanceId"
         - name: region
           description: |
             Human readable name of the geographical Edge Cloud Region of
@@ -749,15 +740,6 @@ paths:
           required: false
           schema:
             $ref: "#/components/schemas/AppId"
-        - name: appDeploymentId
-          description: |
-            A globally unique identifier associated with a existing deployment
-            of an application. Edge Cloud Platform generates this identifier when
-            the deployment request in the Edge Cloud Zone is successful.
-          in: query
-          required: false
-          schema:
-            $ref: "#/components/schemas/AppDeploymentId"
       responses:
         "200":
           description: |
