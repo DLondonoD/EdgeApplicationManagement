@@ -1,7 +1,7 @@
 ---
 openapi: 3.0.3
 info:
-  title: Edge Application Management API
+  title: Edge Application Management
   version: wip
   description: |
     Edge Application Management API allows API consumers to manage the
