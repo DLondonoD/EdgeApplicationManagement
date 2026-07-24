@@ -22,12 +22,12 @@ Feature: CAMARA Edge Application Management API, vwip - Operation submitApp
   # Valid testing device and default request body compliant with the schema
     Given A valid application to be submitted
     And the request body property "$.name" is set to a valid name
-    And the request body property "$.appPorvider" is set to a application provider
+    And the request body property "$.appProvider" is set to a application provider
     And the request body property "$.version" is set to a valid version
     And the request body property "$.packageType" is set to a valid package type
     And the request body property "$.appRepo" is set to a valid repository
     And the request body property "$.requiredResources" is set to a valid required resources object
-    And the request body property "$.componentSpect" is set to a valid object
+    And the request body property "$.componentSpec" is set to a valid object
     When the request "submitApp" is sent
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
@@ -38,14 +38,14 @@ Feature: CAMARA Edge Application Management API, vwip - Operation submitApp
   # Error 409
   @eam_submitApp_409.1_conflict
   Scenario: Error response when an application is already submitted
-    Given an AppManifest request body referencing an already submitted application
+    Given a request body referencing an already submitted application
     And the request body property "$.name" is set to an existing application name
     And the request body property "$.version" is set to the same version of the existing application
-    When invoking with the POST method to submit an app with all required parameters
+    When the request "submitApp" is sent
     Then the response status code is 409
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response header "Content-Type" is "application/json"
-    And the response property "$.code" is "CONFLICT"
+    And the response property "$.code" is "ALREADY_EXISTS"
     And the response property "$.message" contains a user friendly text
   # Error 400
   @eam_submitApp_400.1_schema_not_compliant

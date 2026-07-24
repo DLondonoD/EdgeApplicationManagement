@@ -29,7 +29,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
   @eam_getEdgeCloudZone_02_generic_success_scenario_filtered_by_region
   Scenario: Get information of existing Edge Cloud Zones with optional parameters ("region")
     Given There are at least one Edge Cloud Zones available
-    And the path parameter "$.region" is set to a valid region
+    And the request query parameter "$.region" is set to a valid region
     When When the request "getEdgeCloudZone" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
@@ -40,7 +40,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
   @eam_getEdgeCloudZone_03_generic_success_scenario_filtered_by_status
   Scenario: Get information of existing Edge Cloud Zones with optional parameters ("status")
     Given There are at least one Edge Cloud Zones available
-    And the path parameter "$.status" is set to a valid status
+    And the request query parameter "$.status" is set to a valid status
     When When the request "getEdgeCloudZone" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
@@ -51,7 +51,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
   #/edge-cloud-zones	GET	404
   @eam_getEdgeCloudZone_404.1_not_found
   Scenario: Get information of existing Edge Cloud Zones with invalid optional parameters ("region")
-    Given the path parameter "$.region" is set to an invalid region
+    Given the query parameter "$.region" is set to an invalid region
     When When the request "getEdgeCloudZone" is sent
     Then the response status code is 404
     And the response header "x-correlator" has same value as the request header "x-correlator"

@@ -11,7 +11,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteAppDeplo
   # References to OAS spec schemas refer to schemas specified in edge-application-management.yaml
   Background: Common deleteAppDeployment setup
     Given an environment at "apiRoot"
-    And the resource "/edge-application-management/vwip/deployment/{appDeploymentId}"
+    And the resource "/edge-application-management/vwip/deployments/{appDeploymentId}"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
@@ -19,7 +19,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteAppDeplo
   @eam_deleteAppDeployment_01_generic_success_scenario_async
   Scenario: Delete a running instance of an application within an Edge Cloud Zone with mandatory parameter ("appDeploymentId")
     Given there are application instances running
-    And the request path parameter "$.appDeploymentIdd" is set to a valid application ID
+    And the request path parameter "$.appDeploymentId" is set to a valid application deployment ID
     When the request "deleteApp" is sent
     Then the response status code is 202
     And the response header "Content-Type" is "application/json"
