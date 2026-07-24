@@ -233,7 +233,7 @@ paths:
           description: Application created successfully
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -278,7 +278,7 @@ paths:
           description: List of existing applications
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -325,7 +325,7 @@ paths:
           description: Information of Application
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -371,7 +371,7 @@ paths:
           description: Request accepted
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
         "204":
           description: App deleted
         "400":
@@ -439,7 +439,7 @@ paths:
           description: Application instantiation accepted
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
             Location:
               description: Contains the URI of the newly created application.
               required: true
@@ -524,7 +524,7 @@ paths:
             parameters.
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -571,7 +571,7 @@ paths:
             deletion process
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
         "204":
           description: Application Instance Deleted
         "400":
@@ -635,7 +635,7 @@ paths:
           description: Application deployment accepted
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -708,7 +708,7 @@ paths:
             parameters.
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -756,7 +756,7 @@ paths:
             deletion process
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
         "400":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
@@ -871,7 +871,7 @@ paths:
           description: Application deployment updated successfully
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -946,7 +946,7 @@ paths:
             the specified query parameters.
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -1000,7 +1000,7 @@ paths:
             Available Edge Cloud Zones.
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -1036,13 +1036,6 @@ components:
         Correlation id for the different services
       schema:
         $ref: "#/components/schemas/XCorrelator"
-  headers:
-    x-correlator:
-      description: |
-        Correlation id for the different services
-      required: false
-      schema:
-        $ref: "#/components/schemas/XCorrelator"
 
   callbacks:
     onAppInstanceStatusChange:
@@ -1076,7 +1069,7 @@ components:
               description: Successful notification - No Content
               headers:
                 x-correlator:
-                  $ref: "#/components/headers/x-correlator"
+                  $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
             "400":
               $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
             "401":
@@ -1118,7 +1111,7 @@ components:
               description: Successful notification - No Content
               headers:
                 x-correlator:
-                  $ref: "#/components/headers/x-correlator"
+                  $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
             "400":
               $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
             "401":
