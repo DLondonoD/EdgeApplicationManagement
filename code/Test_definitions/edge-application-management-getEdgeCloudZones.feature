@@ -19,7 +19,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
   @eam_getEdgeCloudZone_01_generic_success_scenario
   Scenario: Get information of existing edge cloud zones
     Given There are at least one Edge Cloud Zones available
-    When the request "getEdgeCloudZone" is sent
+    When the request "getEdgeCloudZones" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -30,7 +30,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
   Scenario: Get information of existing Edge Cloud Zones with optional parameters ("region")
     Given There are at least one Edge Cloud Zones available
     And the path parameter "$.region" is set to a valid region
-    When When the request "getEdgeCloudZone" is sent
+    When the request "getEdgeCloudZones" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -41,7 +41,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
   Scenario: Get information of existing Edge Cloud Zones with optional parameters ("status")
     Given There are at least one Edge Cloud Zones available
     And the path parameter "$.status" is set to a valid status
-    When When the request "getEdgeCloudZone" is sent
+    When the request "getEdgeCloudZones" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -52,7 +52,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
   @eam_getEdgeCloudZone_404.1_not_found
   Scenario: Get information of existing Edge Cloud Zones with invalid optional parameters ("region")
     Given the path parameter "$.region" is set to an invalid region
-    When When the request "getEdgeCloudZone" is sent
+    When the request "getEdgeCloudZones" is sent
     Then the response status code is 404
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response header "Content-Type" is "application/json"
@@ -63,7 +63,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
   @eam_getEdgeCloudZone_403.1_missing_access_token_scope
   Scenario: Missing access token scope
     Given the header "Authorization" is set to an access token that does not include the required scope
-    When When the request "getEdgeCloudZone" is sent
+    When the request "getEdgeCloudZones" is sent
     Then the response status code is 403
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response header "Content-Type" is "application/json"
