@@ -1,4 +1,4 @@
-Feature: CAMARA Edge Application Management API, vwip - Operation getAppInstance
+Feature: CAMARA Edge Application Management API, vwip - Operation getAppDeployment
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
@@ -6,35 +6,34 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getAppInstance
   #
   # Testing assets:
   # * An appId of a submitted application and the values used in the submitApp operation.
-  # * An Application instantiated by createAppInstance operation
+  # * A deployment instantiated by createAppDeployment operation
   # References to OAS spec schemas refer to schemas specified in edge-application-management.yaml
-  Background: Common getAppInstance setup
+  Background: Common getAppDeployment setup
     Given an environment at "apiRoot"
-    And the resource "/edge-application-management/vwip/app-instances/{appInstanceId}"
+    And the resource "/edge-application-management/vwip/deployments/{appDeploymentId}"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
   # Success scenarios
-  @eam_getAppInstance_01_generic_success_scenario
-  Scenario: Get information of an existing application instance
-    Given there is an application instance created by operation createAppInstance
-    And the path parameter "$.appInstanceId" is set to a valid application instance ID
-    When the request "getAppInstance" is sent
+  @eam_getAppDeployment_01_generic_success_scenario
+  Scenario: Get information of an existing application deployment
+    Given there is an application deployment created by operation createAppDeployment
+    And the path parameter "$.appDeploymentId" is set to a valid application deployment ID
+    When the request "getAppDeployment" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/AppInstanceInfo"
-    And the response property "$name" has the value provided for createAppInstance
-    And the response property "$appId" has the value provided for createAppInstance
-    And the response property "$appInstanceId" has the value provided for createAppInstance and used as path parameter
-    And the response property "$appProvider" has the value provided for createAppInstance
-    And the response property "$edgeCloudZoneId" has the value provided for createAppInstance
+    And the response body complies with the OAS schema at "/components/schemas/AppDeploymentInfo"
+    And the response property "$appDeploymentName" has the value provided for createAppDeployment
+    And the response property "$appId" has the value provided for createAppDeployment
+    And the response property "$appDeploymentId" has the value provided for createAppDeployment and used as path parameter
+    And the response property "$edgeCloudZones" has the value provided for createAppDeployment
   # Errors
   # Error 404
-  @eam_getAppInstance_404.1_not_found
-  Scenario: Get information of a non-existing application instance
-    Given the path parameter "$.appInstanceId" is set to an invalid application instance ID
-    When the request "getAppInstance" is sent
+  @eam_getAppDeployment_404.1_not_found
+  Scenario: Get information of a non-existing application deployment
+    Given the path parameter "$.appDeploymentId" is set to an invalid application deployment ID
+    When the request "getAppDeployment" is sent
     Then the response status code is 404
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -42,10 +41,10 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getAppInstance
     And the response property "$.code" is "NOT_FOUND"
     And the response property "$.message" contains a user friendly text
   # Error 403
-  @eam_getAppInstance_403.1_missing_access_token_scope
+  @eam_getAppDeployment_403.1_missing_access_token_scope
   Scenario: Missing access token scope
     Given the header "Authorization" is set to an access token that does not include the required scope
-    When the request "getAppInstance" is sent
+    When the request "getAppDeployment" is sent
     Then the response status code is 403
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response header "Content-Type" is "application/json"

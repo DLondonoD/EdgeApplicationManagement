@@ -34,34 +34,9 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getAppDeployme
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And information of all existing app deployments of given app is returned
     And the response body is an array complying with the OAS schema at "/components/schemas/AppDeploymentInfo"
-  @eam_getAppDeployments_03_success_scenario_filtered_by_appDeploymentId
-  Scenario: Get application deployments info with optional query parameter ("appDeploymentId")
-    Given there are application deployments created by operation createAppDeployment
-    And the request query parameter "$.appDeploymentId" is set to a valid application deployment ID
-    When the request "getAppDeployments" is sent
-    Then the response status code is 200
-    And the response header "Content-Type" is "application/json"
-    And the response header "x-correlator" has same value as the request header "x-correlator"
-    And information of all existing app deployments of given app is returned
-    And the response body is an array complying with the OAS schema at "/components/schemas/AppDeploymentInfo"
-    And the response property "$appDeploymentName" has the value provided for createAppDeployment
-    And the response property "$appId" has the value provided for createAppDeployment
-    And the response property "$appDeploymentId" has the value provided for createAppDeployment and used as query parameter
-    And the response property "$edgeCloudZones" has the value provided for createAppDeployment
   # Errors
   # Error 404
-  @eam_getAppDeployments_404.1_not_found_filtered_by_appDeploymentId
-  Scenario: Get a list of application deployments info with a non-existing appDeploymentId
-    Given there are running deployments of the app
-    And the query parameter "$.appDeploymentId" is set to an invalid application deployment ID
-    When the request "getAppDeployments" is sent
-    Then the response status code is 404
-    And the response header "Content-Type" is "application/json"
-    And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response property "$.status" is 404
-    And the response property "$.code" is "NOT_FOUND"
-    And the response property "$.message" contains a user friendly text
-  @eam_getAppDeployments_404.2_not_found_filtered_by_appId
+  @eam_getAppDeployments_404.1_not_found_filtered_by_appId
   Scenario: Get a list of application deployments info with a non-existing appId
     Given the query parameter "appId" is set to a random UUID
     When the request "getAppDeployments" is sent
