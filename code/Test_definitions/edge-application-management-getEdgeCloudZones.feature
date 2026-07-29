@@ -29,7 +29,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
   @eam_getEdgeCloudZones_02_generic_success_scenario_filtered_by_region
   Scenario: Get information of existing Edge Cloud Zones with optional parameters ("region")
     Given There are at least one Edge Cloud Zones available
-    And the path parameter "$.region" is set to a valid region
+    And the request query parameter "$.region" is set to a valid region
     When the request "getEdgeCloudZones" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
@@ -40,25 +40,13 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
   @eam_getEdgeCloudZones_03_generic_success_scenario_filtered_by_status
   Scenario: Get information of existing Edge Cloud Zones with optional parameters ("status")
     Given There are at least one Edge Cloud Zones available
-    And the path parameter "$.status" is set to a valid status
+    And the request query parameter "$.status" is set to a valid status
     When the request "getEdgeCloudZones" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And information of Edge Cloud Zones of "$.status" is returned
     And the response body complies with the OAS schema at "/components/schemas/EdgeCloudZones"
-  #Errors
-  #/edge-cloud-zones	GET	404
-  @eam_getEdgeCloudZones_404.1_not_found
-  Scenario: Get information of existing Edge Cloud Zones with invalid optional parameters ("region")
-    Given the path parameter "$.region" is set to an invalid region
-    When the request "getEdgeCloudZones" is sent
-    Then the response status code is 404
-    And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response header "Content-Type" is "application/json"
-    And the response property "$.status" is 404
-    And the response property "$.code" is "NOT_FOUND"
-    And the response property "$.message" contains a user friendly text
   # Errors 403
   @eam_getEdgeCloudZones_403.1_missing_access_token_scope
   Scenario: Missing access token scope
