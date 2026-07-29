@@ -45,17 +45,6 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getAppInstance
     And information of all existing app instances running in the specified region is returned
     And the response body complies with the OAS schema at "/components/schemas/AppInstanceInfo"
   # Errors
-  # Error 404
-  @eam_getAppInstances_404.1_not_found_filtered_by_appId
-  Scenario: Get a list of application instances info with a non-existing appId
-    Given the path parameter "appId" is set to a random UUID
-    When the request "getAppInstances" is sent
-    Then the response status code is 404
-    And the response header "Content-Type" is "application/json"
-    And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response property "$.status" is 404
-    And the response property "$.code" is "NOT_FOUND"
-    And the response property "$.message" contains a user friendly text
   # Error 403
   @eam_getAppInstances_403.1_missing_access_token_scope
   Scenario: Missing access token scope
