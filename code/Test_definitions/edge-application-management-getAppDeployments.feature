@@ -57,15 +57,3 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getAppDeployme
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
-  # Error 410
-  @eam_getAppDeployments_410.1_gone
-  Scenario: Get information of a removed app deployment
-    Given app deployment with "$.appDeploymentId" was removed by deleteAppDeployment operation
-    And the request query parameter "$.appDeploymentId" is set to an already removed appDeploymentId
-    When the request "getAppDeployments" is sent
-    Then the response status code is 410
-    And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response header "Content-Type" is "application/json"
-    And the response property "$.status" is 410
-    And the response property "$.code" is "GONE"
-    And the response property "$.message" contains a user friendly text

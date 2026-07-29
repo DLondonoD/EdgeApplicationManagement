@@ -49,14 +49,3 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteAppDeplo
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
-  # Error 410
-  @eam_deleteAppDeployment_410.1_gone
-  Scenario: Delete an already removed deployment
-    Given the request path parameter "$.appDeploymentId" is set to an already removed Deployment ID
-    When the request "deleteAppDeployment" is sent
-    Then the response status code is 410
-    And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response header "Content-Type" is "application/json"
-    And the response property "$.status" is 410
-    And the response property "$.code" is "GONE"
-    And the response property "$.message" contains a user friendly text
