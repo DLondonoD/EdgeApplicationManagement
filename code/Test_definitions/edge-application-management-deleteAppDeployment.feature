@@ -20,7 +20,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteAppDeplo
   Scenario: Delete a running instance of an application within an Edge Cloud Zone with mandatory parameter ("appDeploymentId")
     Given there are application instances running
     And the request path parameter "$.appDeploymentId" is set to a valid application deployment ID
-    When the request "deleteApp" is sent
+    When the request "deleteAppDeployment" is sent
     Then the response status code is 202
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"

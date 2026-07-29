@@ -29,8 +29,8 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getClusters
   @eam_getClusters_02_generic_success_scenario_filtered_by_region
   Scenario: Get information of existing clusters with optional parameters ("region")
     Given There are at least one cluster available
-    And the path parameter "$.region" is set to a valid region
-    When When the request "getClusters" is sent
+    And the request query parameter "$.region" is set to a valid region
+    When the request "getClusters" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -40,8 +40,8 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getClusters
   @eam_getClusters_03_generic_success_scenario_filtered_by_edgeCloudZone
   Scenario: Get information of existing clusters with optional parameters ("edgeCloudZoneId")
     Given There are at least one cluster available
-    And the path parameter "$.edgeCloudZoneId" is set to a valid edgeCloudZoneId
-    When When the request "getClusters" is sent
+    And the request query parameter "$.edgeCloudZoneId" is set to a valid edgeCloudZoneId
+    When the request "getClusters" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -51,8 +51,8 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getClusters
   @eam_getClusters_04_generic_success_scenario_filtered_by_clusterRef
   Scenario: Get information of existing clusters with optional parameters ("clusterRef")
     Given There are at least one cluster available
-    And the path parameter "$.clusterRef" is set to a valid clusterRef
-    When When the request "getClusters" is sent
+    And the request query parameter "$.clusterRef" is set to a valid clusterRef
+    When the request "getClusters" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -62,8 +62,8 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getClusters
   #/clusters	GET	404
   @eam_getClusters_404.1_not_found
   Scenario: Get information of existing clusters with invalid optional parameters ("region")
-    Given the path parameter "$.region" is set to an invalid region
-    When When the request "getClusters" is sent
+    Given the request query parameter "$.region" is set to an invalid region
+    When the request "getClusters" is sent
     Then the response status code is 404
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response header "Content-Type" is "application/json"
@@ -74,7 +74,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getClusters
   @eam_getClusters_403.1_missing_access_token_scope
   Scenario: Missing access token scope
     Given the header "Authorization" is set to an access token that does not include the required scope
-    When When the request "getClusters" is sent
+    When the request "getClusters" is sent
     Then the response status code is 403
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response header "Content-Type" is "application/json"

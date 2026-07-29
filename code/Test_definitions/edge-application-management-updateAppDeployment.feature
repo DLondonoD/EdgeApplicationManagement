@@ -23,7 +23,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation updateAppDeplo
     Given there are application instances running
     And the request path parameter "$.appDeploymentId" is set to a valid application deployment ID
     And the body property "$.appDeploymentName" is set to a valid name
-    When the request "deleteApp" is sent
+    When the request "updateAppDeployment" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
