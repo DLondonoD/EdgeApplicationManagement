@@ -1,7 +1,7 @@
 ---
 openapi: 3.0.3
 info:
-  title: Edge Application Management API
+  title: Edge Application Management
   version: wip
   description: |
     Edge Application Management API allows API consumers to manage the
@@ -184,8 +184,8 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 externalDocs:
-  description: Product documentation at Camara
-  url: https://github.com/camaraproject/EdgeCloud
+  description: Product documentation at CAMARA
+  url: https://github.com/camaraproject/EdgeApplicationManagement
 
 servers:
   - url: "{apiRoot}/edge-application-management/vwip"
@@ -237,7 +237,7 @@ paths:
           description: Application created successfully
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -260,8 +260,6 @@ paths:
                 message: "App already exists"
         "500":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "501":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic501"
         "503":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
     get:
@@ -282,7 +280,7 @@ paths:
           description: List of existing applications
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -329,7 +327,7 @@ paths:
           description: Information of Application
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -372,7 +370,7 @@ paths:
           description: Request accepted
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
         "204":
           description: App deleted
         "400":
@@ -391,7 +389,7 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
               example:
                 status: 409
-                code: ABORTED
+                code: INCOMPATIBLE_STATE
                 message: "App with a running application instance cannot be deleted"
         "500":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
@@ -440,7 +438,7 @@ paths:
           description: Application instantiation accepted
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
             Location:
               description: |
                 Contains the URI of the newly created application instance,
@@ -473,8 +471,6 @@ paths:
                 message: "Application already instantiated in the given Edge Cloud Zone"
         "500":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "501":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic501"
         "503":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
       callbacks:
@@ -519,7 +515,7 @@ paths:
             parameters.
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -565,7 +561,7 @@ paths:
           description: Information of the Application Instance
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -610,7 +606,7 @@ paths:
             deletion process
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
         "204":
           description: Application Instance Deleted
         "400":
@@ -674,7 +670,7 @@ paths:
           description: Application deployment accepted
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
             Location:
               description: |
                 Contains the URI of the newly created application deployment,
@@ -710,8 +706,6 @@ paths:
                 message: "Deployment already exists"
         "500":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "501":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic501"
         "503":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
       callbacks:
@@ -748,7 +742,7 @@ paths:
             parameters.
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -762,8 +756,6 @@ paths:
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
-        "410":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic410"
         "500":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "503":
@@ -796,7 +788,7 @@ paths:
           description: Information of the Application Deployment
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -840,7 +832,7 @@ paths:
             deletion process
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
         "400":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
@@ -849,8 +841,6 @@ paths:
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "404":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic404"
-        "410":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic410"
         "500":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
         "503":
@@ -955,7 +945,7 @@ paths:
           description: Application deployment updated successfully
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -968,8 +958,6 @@ paths:
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "404":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic404"
-        "410":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic410"
         "409":
           description: Conflict
           content:
@@ -1030,7 +1018,7 @@ paths:
             the specified query parameters.
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -1084,7 +1072,7 @@ paths:
             Available Edge Cloud Zones.
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -1120,13 +1108,6 @@ components:
         Correlation id for the different services
       schema:
         $ref: "#/components/schemas/XCorrelator"
-  headers:
-    x-correlator:
-      description: |
-        Correlation id for the different services
-      required: false
-      schema:
-        $ref: "#/components/schemas/XCorrelator"
 
   callbacks:
     onAppInstanceStatusChange:
@@ -1160,7 +1141,7 @@ components:
               description: Successful notification - No Content
               headers:
                 x-correlator:
-                  $ref: "#/components/headers/x-correlator"
+                  $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
             "400":
               $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
             "401":
@@ -1196,16 +1177,13 @@ components:
             content:
               application/cloudevents+json:
                 schema:
-                  type: array
-                  maxItems: 100
-                  items:
-                    $ref: "#/components/schemas/CloudEvent"
+                  $ref: "#/components/schemas/CloudEvent"
           responses:
             "204":
               description: Successful notification - No Content
               headers:
                 x-correlator:
-                  $ref: "#/components/headers/x-correlator"
+                  $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
             "400":
               $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
             "401":
@@ -1233,7 +1211,8 @@ components:
                 Access Token granting access to the POST operation to create
                 notification
               type: string
-              maxLength: 8192
+              writeOnly: true
+              maxLength: 4096
             accessTokenExpiresUtc:
               type: string
               format: date-time
@@ -1290,7 +1269,7 @@ components:
         types:
           description: |
             Camara Event types eligible to be delivered by this subscription.
-            Note: the maximum number of event types per subscription will be decided at API project level
+            Exactly one event type is required per subscription.
           type: array
           minItems: 1
           maxItems: 1
@@ -1583,6 +1562,7 @@ components:
             credentials:
               type: string
               maxLength: 2048
+              writeOnly: true
               description: |
                 Password or personal access token created by
                 developer to acces the app repository. API users can generate
@@ -1739,7 +1719,7 @@ components:
         version:
           type: string
           maxLength: 64
-          pattern: ^v?\\d+\\.\\d+(?:\\.\\d+)?(?:[-+][0-9A-Za-z.-]+)?$
+          pattern: ^v?\d+\.\d+(?:\.\d+)?(?:[-+][0-9A-Za-z.-]+)?$
           description: Kubernetes version of the cluster.
         nodePools:
           description: Node Pools in the cluster.
@@ -2207,7 +2187,7 @@ components:
           type: string
           maxLength: 64
           description: Minimum Kubernetes Version.
-          pattern: ^v?\\d+\\.\\d+(?:\\.\\d+)?(?:[-+][0-9A-Za-z.-]+)?$
+          pattern: ^v?\d+\.\d+(?:\.\d+)?(?:[-+][0-9A-Za-z.-]+)?$
         additionalStorage:
           type: string
           maxLength: 32
