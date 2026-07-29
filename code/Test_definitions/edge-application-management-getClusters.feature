@@ -29,7 +29,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getClusters
   @eam_getClusters_02_generic_success_scenario_filtered_by_region
   Scenario: Get information of existing clusters with optional parameters ("region")
     Given There are at least one cluster available
-    And the path parameter "$.region" is set to a valid region
+    And the request query parameter "$.region" is set to a valid region
     When the request "getClusters" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
@@ -40,7 +40,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getClusters
   @eam_getClusters_03_generic_success_scenario_filtered_by_edgeCloudZone
   Scenario: Get information of existing clusters with optional parameters ("edgeCloudZoneId")
     Given There are at least one cluster available
-    And the path parameter "$.edgeCloudZoneId" is set to a valid edgeCloudZoneId
+    And the request query parameter "$.edgeCloudZoneId" is set to a valid edgeCloudZoneId
     When the request "getClusters" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
@@ -51,7 +51,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getClusters
   @eam_getClusters_04_generic_success_scenario_filtered_by_clusterRef
   Scenario: Get information of existing clusters with optional parameters ("clusterRef")
     Given There are at least one cluster available
-    And the path parameter "$.clusterRef" is set to a valid clusterRef
+    And the request query parameter "$.clusterRef" is set to a valid clusterRef
     When the request "getClusters" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
@@ -62,7 +62,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getClusters
   #/clusters	GET	404
   @eam_getClusters_404.1_not_found
   Scenario: Get information of existing clusters with invalid optional parameters ("region")
-    Given the path parameter "$.region" is set to an invalid region
+    Given the request query parameter "$.region" is set to an invalid region
     When the request "getClusters" is sent
     Then the response status code is 404
     And the response header "x-correlator" has same value as the request header "x-correlator"
