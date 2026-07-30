@@ -45,7 +45,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppDeplo
     And the response body contains the "appDeploymentId"
   # Error scenarios
   #Error 409
-  @eam_createAppDeployment_409.conflict
+  @eam_createAppDeployment_409.1_already_exists
   Scenario: Instantiate an existing application with mandatory parameters ("appDeploymentName", "appId" and "edgeCloudZoneId" in body)
     Given there are running instances of the app
     And the request body property "$.appDeploymentName" is set to a valid name

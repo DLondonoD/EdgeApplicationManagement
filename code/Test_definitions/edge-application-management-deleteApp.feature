@@ -27,7 +27,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteApp
     And the application information is deleted
   # Errors
   # Error 409
-  @eam_deleteApp_409.1_conflict
+  @eam_deleteApp_409.1_aborted
   Scenario: Error response for deleting an application with a running instance
     Given there is at least one running instance of the app
     And the path parameter "$.appId" is set to a valid application ID

@@ -36,7 +36,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation submitApp
     And the response property "$.appId" is returned
   # Error scenarios
   # Error 409
-  @eam_submitApp_409.1_conflict
+  @eam_submitApp_409.1_already_exists
   Scenario: Error response when an application is already submitted
     Given a request body referencing an already submitted application
     And the request body property "$.name" is set to an existing application name

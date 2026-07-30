@@ -43,7 +43,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppInsta
     And the response body complies with the OAS schema at "/components/schemas/AppInstanceInfo"
   # Error scenarios
   #Error 409
-  @eam_createAppInstance_409.conflict
+  @eam_createAppInstance_409.1_already_exists
   Scenario: Instantiate an existing application with mandatory parameters ("name", "appId" and "edgeCloudZoneId" in body)
     Given there are running instances of the app
     And the request body property "$.name" is set to a valid name
