@@ -24,7 +24,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppInsta
     And the request body property "$.name" is set to a valid name
     And the request body property "$.appId" is set to a valid application ID
     And the request body property "$.edgeCloudZoneId" is set to a valid edge zone id
-    When the request "createApp" is sent
+    When the request "createAppInstance" is sent
     Then the response status code is 202
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has the same value as the request header "x-correlator"
@@ -36,7 +36,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppInsta
     And the request body property "$.appId" is set to a valid application ID
     And the request body property "$.edgeCloudZoneId" is set to a valid edge zone id
     And the request body property "$.KubernetesClusterRef" is set to a valid kubernetes cluster
-    When the request "createApp" is sent
+    When the request "createAppInstance" is sent
     Then the response status code is 202
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has the same value as the request header "x-correlator"
@@ -50,7 +50,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppInsta
     And the request body property "$.appId" is set to a valid application ID
     And the request body property "$.edgeCloudZoneId" is set to a valid edge zone id
     And Application instance with "$.name" and "$.appId" is already running in "$.edgeCloudZoneId"
-    When the request "createApp" is sent
+    When the request "createAppInstance" is sent
     Then the response status code is 409
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has the same value as the request header "x-correlator"
