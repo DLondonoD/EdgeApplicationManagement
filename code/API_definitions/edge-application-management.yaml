@@ -250,6 +250,9 @@ paths:
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "409":
           description: Conflict
+          headers:
+            x-correlator:
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -373,6 +376,9 @@ paths:
               $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
         "204":
           description: App deleted
+          headers:
+            x-correlator:
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
         "400":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
@@ -383,6 +389,9 @@ paths:
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic404"
         "409":
           description: Conflict
+          headers:
+            x-correlator:
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -461,6 +470,9 @@ paths:
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "409":
           description: Conflict
+          headers:
+            x-correlator:
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -609,6 +621,9 @@ paths:
               $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
         "204":
           description: Application Instance Deleted
+          headers:
+            x-correlator:
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
         "400":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
         "401":
@@ -696,6 +711,9 @@ paths:
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
         "409":
           description: Conflict
+          headers:
+            x-correlator:
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -960,6 +978,9 @@ paths:
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic404"
         "409":
           description: Conflict
+          headers:
+            x-correlator:
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -1228,6 +1249,7 @@ components:
             accessTokenType:
               description: Type of access token - MUST be set to bearer for now
               type: string
+              writeOnly: true
               enum:
                 - bearer
           required:
