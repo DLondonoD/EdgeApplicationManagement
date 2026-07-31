@@ -40,6 +40,17 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getAppDeployme
     And the response property "$.status" is 404
     And the response property "$.code" is "NOT_FOUND"
     And the response property "$.message" contains a user friendly text
+  # Error 401
+  @eam_getAppDeployment_401.1_missing_access_token
+  Scenario: Missing access token
+    Given the header "Authorization" is not included
+    When the request "getAppDeployment" is sent
+    Then the response status code is 401
+    And the response header "x-correlator" has same value as the request header "x-correlator"
+    And the response header "Content-Type" is "application/json"
+    And the response property "$.status" is 401
+    And the response property "$.code" is "UNAUTHENTICATED"
+    And the response property "$.message" contains a user friendly text
   # Error 403
   @eam_getAppDeployment_403.1_missing_access_token_scope
   Scenario: Missing access token scope
