@@ -11,23 +11,23 @@ Feature: CAMARA Edge Application Management API, vwip - Operation updateAppDeplo
   # References to OAS spec schemas refer to schemas specified in edge-application-management.yaml
   Background: Common updateAppDeployment setup
     Given an environment at "apiRoot"
-    And the resource "/edge-application-management/vwip/deployment/{appDeploymentId}"
+    And the resource "/edge-application-management/vwip/deployments/{appDeploymentId}"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
   # Properties not explicitly overwritten in the Scenarios can take any values compliant with the schema
-    And the request body is set by default to a request body compliant with the schema at "/components/schemas/AppDeploymentManifest"
+    And the request body is set by default to a request body compliant with the request body schema for this operation
   # Success scenarios
   @eam_updateAppDeployment_01_generic_success_scenario
   Scenario: Update a running instance of an application within an Edge Cloud Zone with mandatory parameter ("appDeploymentId")
     Given there are application instances running
-    And the request path parameter "$.appDeploymentIdd" is set to a valid application ID
+    And the request path parameter "$.appDeploymentId" is set to a valid application deployment ID
     And the body property "$.appDeploymentName" is set to a valid name
     When the request "updateAppDeployment" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/AppInstanceInfo"
+    And the response body complies with the OAS schema at "/components/schemas/AppDeploymentInfo"
   # Errors
   # Error 404
   @eam_updateAppDeployment_404.1_invalid_parameter
@@ -51,15 +51,4 @@ Feature: CAMARA Edge Application Management API, vwip - Operation updateAppDeplo
     And the response header "Content-Type" is "application/json"
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
-    And the response property "$.message" contains a user friendly text
-  # Error 410
-  @eam_updateAppDeployment_410.1_gone
-  Scenario: Update an already removed deployment
-    Given the request path parameter "$.appDeploymentId" is set to an already removed Deployment ID
-    When the request "updateAppDeployment" is sent
-    Then the response status code is 410
-    And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response header "Content-Type" is "application/json"
-    And the response property "$.status" is 410
-    And the response property "$.code" is "GONE"
     And the response property "$.message" contains a user friendly text

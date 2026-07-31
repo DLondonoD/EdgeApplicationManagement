@@ -16,7 +16,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppInsta
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
   # Properties not explicitly overwritten in the Scenarios can take any values compliant with the schema
-    And the request body is set by default to a request body compliant with the schema at "/components/schemas/AppInstanceManifest"
+    And the request body is set by default to a request body compliant with the request body schema for this operation
   # Success scenarios
   @eam_createAppInstance_01_generic_success_scenario
   Scenario: Instantiate an Application with just mandatory parameters ("name", "appId" and "edgeCloudZoneId" in body)
@@ -30,12 +30,12 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppInsta
     And the response header "x-correlator" has the same value as the request header "x-correlator"
     And the response body complies with the OAS schema at "/components/schemas/AppInstanceInfo"
   @eam_createAppInstance_02_success_scenario_optional_parameters
-  Scenario: Instantiate an Application with mandatory parameters ("name", "appId" and "edgeCloudZoneId" in body) and optional parameter ("KubernetesClusterRef")
+  Scenario: Instantiate an Application with mandatory parameters ("name", "appId" and "edgeCloudZoneId" in body) and optional parameter ("kubernetesClusterRef")
     Given an application has already been submitted by operation submitApp
     And the request body property "$.name" is set to a valid name
     And the request body property "$.appId" is set to a valid application ID
     And the request body property "$.edgeCloudZoneId" is set to a valid edge zone id
-    And the request body property "$.KubernetesClusterRef" is set to a valid kubernetes cluster
+    And the request body property "$.kubernetesClusterRef" is set to a valid kubernetes cluster
     When the request "createAppInstance" is sent
     Then the response status code is 202
     And the response header "Content-Type" is "application/json"
@@ -43,7 +43,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppInsta
     And the response body complies with the OAS schema at "/components/schemas/AppInstanceInfo"
   # Error scenarios
   #Error 409
-  @eam_createAppInstance_409.conflict
+  @eam_createAppInstance_409.1_already_exists
   Scenario: Instantiate an existing application with mandatory parameters ("name", "appId" and "edgeCloudZoneId" in body)
     Given there are running instances of the app
     And the request body property "$.name" is set to a valid name
@@ -54,12 +54,12 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppInsta
     Then the response status code is 409
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has the same value as the request header "x-correlator"
-    And the response property "$.code" is "CONFLICT"
+    And the response property "$.code" is "ALREADY_EXISTS"
     And the response property "$.message" contains a user friendly text
   # Error 400
   @eam_createAppInstance_400.1_schema_not_compliant
   Scenario: Invalid Argument. Generic Syntax Exception
-    Given the request body is set to any value which is not compliant with the schema at "/components/schemas/AppInstanceManifest"
+    Given the request body is set to any value which is not compliant with the request body schema for this operation
     When the request "createAppInstance" is sent
     Then the response status code is 400
     And the response header "x-correlator" has same value as the request header "x-correlator"

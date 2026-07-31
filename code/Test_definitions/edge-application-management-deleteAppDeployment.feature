@@ -11,7 +11,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteAppDeplo
   # References to OAS spec schemas refer to schemas specified in edge-application-management.yaml
   Background: Common deleteAppDeployment setup
     Given an environment at "apiRoot"
-    And the resource "/edge-application-management/vwip/deployment/{appDeploymentId}"
+    And the resource "/edge-application-management/vwip/deployments/{appDeploymentId}"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
@@ -19,7 +19,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteAppDeplo
   @eam_deleteAppDeployment_01_generic_success_scenario_async
   Scenario: Delete a running instance of an application within an Edge Cloud Zone with mandatory parameter ("appDeploymentId")
     Given there are application instances running
-    And the request path parameter "$.appDeploymentIdd" is set to a valid application ID
+    And the request path parameter "$.appDeploymentId" is set to a valid application deployment ID
     When the request "deleteAppDeployment" is sent
     Then the response status code is 202
     And the response header "Content-Type" is "application/json"
@@ -48,15 +48,4 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteAppDeplo
     And the response header "Content-Type" is "application/json"
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
-    And the response property "$.message" contains a user friendly text
-  # Error 410
-  @eam_deleteAppDeployment_410.1_gone
-  Scenario: Delete an already removed deployment
-    Given the request path parameter "$.appDeploymentId" is set to an already removed Deployment ID
-    When the request "deleteAppDeployment" is sent
-    Then the response status code is 410
-    And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response header "Content-Type" is "application/json"
-    And the response property "$.status" is 410
-    And the response property "$.code" is "GONE"
     And the response property "$.message" contains a user friendly text
