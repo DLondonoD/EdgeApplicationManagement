@@ -47,6 +47,17 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And information of Edge Cloud Zones of "$.status" is returned
     And the response body complies with the OAS schema at "/components/schemas/EdgeCloudZones"
+  # Error 401
+  @eam_getEdgeCloudZones_401.1_missing_access_token
+  Scenario: Missing access token
+    Given the header "Authorization" is not included
+    When the request "getEdgeCloudZones" is sent
+    Then the response status code is 401
+    And the response header "x-correlator" has same value as the request header "x-correlator"
+    And the response header "Content-Type" is "application/json"
+    And the response property "$.status" is 401
+    And the response property "$.code" is "UNAUTHENTICATED"
+    And the response property "$.message" contains a user friendly text
   # Errors 403
   @eam_getEdgeCloudZones_403.1_missing_access_token_scope
   Scenario: Missing access token scope

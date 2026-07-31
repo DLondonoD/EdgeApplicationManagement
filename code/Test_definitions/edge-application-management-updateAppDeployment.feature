@@ -28,6 +28,18 @@ Feature: CAMARA Edge Application Management API, vwip - Operation updateAppDeplo
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response body complies with the OAS schema at "/components/schemas/AppDeploymentInfo"
+  # Error 409
+  @eam_updateAppDeployment_409.1_aborted
+  Scenario: Error response for a concurrent update conflict
+    Given there is a concurrent update in progress for the deployment
+    And the request path parameter "$.appDeploymentId" is set to a valid application deployment ID
+    When the request "updateAppDeployment" is sent
+    Then the response status code is 409
+    And the response header "x-correlator" has same value as the request header "x-correlator"
+    And the response header "Content-Type" is "application/json"
+    And the response property "$.status" is 409
+    And the response property "$.code" is "ABORTED"
+    And the response property "$.message" contains a user friendly text
   # Errors
   # Error 404
   @eam_updateAppDeployment_404.1_invalid_parameter
@@ -40,6 +52,17 @@ Feature: CAMARA Edge Application Management API, vwip - Operation updateAppDeplo
     And the response header "Content-Type" is "application/json"
     And the response property "$.status" is 404
     And the response property "$.code" is "NOT_FOUND"
+    And the response property "$.message" contains a user friendly text
+  # Error 401
+  @eam_updateAppDeployment_401.1_missing_access_token
+  Scenario: Missing access token
+    Given the header "Authorization" is not included
+    When the request "updateAppDeployment" is sent
+    Then the response status code is 401
+    And the response header "x-correlator" has same value as the request header "x-correlator"
+    And the response header "Content-Type" is "application/json"
+    And the response property "$.status" is 401
+    And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
   # Error 403
   @eam_updateAppDeployment_403.1_missing_access_token_scope
