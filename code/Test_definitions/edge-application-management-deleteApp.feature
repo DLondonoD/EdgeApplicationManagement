@@ -27,7 +27,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteApp
     And the application information is deleted
   # Errors
   # Error 409
-  @eam_deleteApp_409.1_aborted
+  @eam_deleteApp_409.1_incompatible_state
   Scenario: Error response for deleting an application with a running instance
     Given there is at least one running instance of the app
     And the path parameter "$.appId" is set to a valid application ID
@@ -36,7 +36,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteApp
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response header "Content-Type" is "application/json"
     And the response property "$.status" is 409
-    And the response property "$.code" is "ABORTED"
+    And the response property "$.code" is "INCOMPATIBLE_STATE"
     And the response property "$.message" contains a user friendly text
   # Error 404
   @eam_deleteApp_404.1_invalid_parameter
