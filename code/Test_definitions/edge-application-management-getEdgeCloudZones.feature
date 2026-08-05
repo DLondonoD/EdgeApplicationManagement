@@ -25,9 +25,9 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response body complies with the OAS schema at "/components/schemas/EdgeCloudZoneList"
-    And the response property "$.items" is a list of Edge Cloud Zones
+    And the response property "$.edgeCloudZones" is a list of Edge Cloud Zones
     And the response property "$.pagination" is present and complies with the OAS schema at "/components/schemas/Pagination"
-    And any Edge Cloud Zone with Kubernetes clusters includes them in the "$.items[].clusters" property
+    And any Edge Cloud Zone with Kubernetes clusters includes them in the "$.edgeCloudZones[].clusters" property
   #/edge-cloud-zones	GET	200	filtered by countryCode
   @eam_getEdgeCloudZones_02_success_scenario_filtered_by_countryCode
   Scenario: Get information of existing Edge Cloud Zones with optional parameter ("countryCode")
@@ -50,8 +50,19 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And information of Edge Cloud Zones of "$.edgeCloudProvider" is returned
     And the response body complies with the OAS schema at "/components/schemas/EdgeCloudZoneList"
+  #/edge-cloud-zones	GET	200	filtered by edgeCloudRegion
+  @eam_getEdgeCloudZones_04_success_scenario_filtered_by_edgeCloudRegion
+  Scenario: Get information of existing Edge Cloud Zones with optional parameter ("edgeCloudRegion")
+    Given There are at least one Edge Cloud Zones available
+    And the request query parameter "$.edgeCloudRegion" is set to a valid Edge Cloud Provider-specific region name
+    When the request "getEdgeCloudZones" is sent
+    Then the response status code is 200
+    And the response header "Content-Type" is "application/json"
+    And the response header "x-correlator" has same value as the request header "x-correlator"
+    And information of Edge Cloud Zones of "$.edgeCloudRegion" is returned
+    And the response body complies with the OAS schema at "/components/schemas/EdgeCloudZoneList"
   #/edge-cloud-zones	GET	200	filtered by status
-  @eam_getEdgeCloudZones_04_success_scenario_filtered_by_status
+  @eam_getEdgeCloudZones_05_success_scenario_filtered_by_status
   Scenario: Get information of existing Edge Cloud Zones with optional parameter ("status")
     Given There are at least one Edge Cloud Zones available
     And the request query parameter "$.status" is set to a valid status
@@ -62,7 +73,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
     And information of Edge Cloud Zones of "$.status" is returned
     And the response body complies with the OAS schema at "/components/schemas/EdgeCloudZoneList"
   #/edge-cloud-zones	GET	200	no status filter returns zones regardless of status
-  @eam_getEdgeCloudZones_05_success_scenario_no_status_filter
+  @eam_getEdgeCloudZones_06_success_scenario_no_status_filter
   Scenario: Get existing Edge Cloud Zones without the optional parameter ("status")
     Given there are Edge Cloud Zones available with different statuses
     When the request "getEdgeCloudZones" is sent
@@ -72,7 +83,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
     And Edge Cloud Zones with any status are returned
     And the response body complies with the OAS schema at "/components/schemas/EdgeCloudZoneList"
   #/edge-cloud-zones	GET	200	paginated by page and perPage
-  @eam_getEdgeCloudZones_06_success_scenario_paginated
+  @eam_getEdgeCloudZones_07_success_scenario_paginated
   Scenario: Get a specific page of existing Edge Cloud Zones with optional parameters ("page", "perPage")
     Given there are more Edge Cloud Zones available than the requested "perPage" value
     And the request query parameter "$.page" is set to a valid page number

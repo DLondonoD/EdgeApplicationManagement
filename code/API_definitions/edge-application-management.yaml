@@ -90,7 +90,8 @@ info:
     *  __getEdgeCloudZones__ Paginated list of the operators Edge Cloud Zones,
     including their status, geographical country code and, when applicable,
     the Kubernetes clusters available within each zone. Results can be
-    filtered by country code, status and Edge Cloud Provider.
+    filtered by country code, Edge Cloud Provider, Edge Cloud
+    Provider-specific region and status.
 
     <!-- CAMARA:MANDATORY:authorization-and-authentication:BEGIN -->
 
@@ -1004,8 +1005,9 @@ paths:
       description: |
         List of the provider's Edge Cloud Zones, including their status and,
         when applicable, the Kubernetes clusters available within each zone.
-        Results can be filtered by country code, status and Edge Cloud
-        Provider, and are returned as a paginated collection.
+        Results can be filtered by country code, Edge Cloud Provider,
+        Edge Cloud Provider-specific region and status, and are returned as
+        a paginated collection.
       operationId: getEdgeCloudZones
       parameters:
         - $ref: "#/components/parameters/x-correlator"
@@ -1028,6 +1030,16 @@ paths:
           required: false
           schema:
             $ref: "#/components/schemas/EdgeCloudProvider"
+        - name: edgeCloudRegion
+          description: |
+            Edge Cloud Provider-specific geographical region name to filter
+            Edge Cloud Zones by. Since this value is not standardized across
+            Edge Cloud Providers, prefer filtering by countryCode when
+            provider-independent results are needed.
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/EdgeCloudRegion"
         - name: status
           description: |
             Status of the Edge Cloud Zone to filter by. If omitted, Edge
@@ -1786,10 +1798,10 @@ components:
         A paginated collection of Edge Cloud Zones where the Application
         Provider can instantiate an Application Instance.
       required:
-        - items
+        - edgeCloudZones
         - pagination
       properties:
-        items:
+        edgeCloudZones:
           type: array
           maxItems: 100
           items:
