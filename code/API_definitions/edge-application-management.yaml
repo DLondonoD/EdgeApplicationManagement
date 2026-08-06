@@ -1116,7 +1116,7 @@ components:
                       - PERMISSION_DENIED
           examples:
             GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              description: Permission denied. OAuth2 token access does not have the required scope
               value:
                 status: 403
                 code: PERMISSION_DENIED
