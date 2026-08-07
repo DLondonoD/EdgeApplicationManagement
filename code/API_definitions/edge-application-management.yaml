@@ -1633,6 +1633,14 @@ components:
           maxItems: 100
           items:
             $ref: "#/components/schemas/AppInstanceId"
+        kubernetesClusterRefs:
+          description: |
+            List of Kubernetes clusters used by this deployment, when
+            applicable.
+          type: array
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/KubernetesClusterRef"
 
     AppInstanceInfo:
       description: Information about the application instance.

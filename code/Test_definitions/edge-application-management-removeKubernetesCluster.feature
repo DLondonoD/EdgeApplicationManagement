@@ -29,6 +29,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation removeKubernet
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response body complies with the OAS schema at "/components/schemas/AppDeploymentInfo"
+    And the response property "$.kubernetesClusterRefs" does not contain the value provided for "$.kubernetesClusterRef"
   # Error scenarios
   # Error 400
   @eam_removeKubernetesCluster_400.1_schema_not_compliant
