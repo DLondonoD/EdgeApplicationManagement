@@ -29,12 +29,11 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppInsta
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has the same value as the request header "x-correlator"
     And the response body complies with the OAS schema at "/components/schemas/AppInstanceInfo"
-  @eam_createAppInstance_02_success_scenario_optional_parameters
-  Scenario: Instantiate an Application with mandatory parameters ("name", "appId" and "edgeCloudZoneId" in body) and optional parameter ("kubernetesClusterRef")
-    Given an application has already been submitted by operation submitApp
+  @eam_createAppInstance_02_success_scenario_kubernetes_cluster
+  Scenario: Instantiate a Kubernetes application with mandatory parameters ("name", "appId" and "kubernetesClusterRef" in body)
+    Given an application requiring Kubernetes resources has already been submitted by operation submitApp
     And the request body property "$.name" is set to a valid name
     And the request body property "$.appId" is set to a valid application ID
-    And the request body property "$.edgeCloudZoneId" is set to a valid edge zone id
     And the request body property "$.kubernetesClusterRef" is set to a valid kubernetes cluster
     When the request "createAppInstance" is sent
     Then the response status code is 202
@@ -90,6 +89,41 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppInsta
   @eam_createAppInstance_400.4_empty_property
   Scenario: Error response for empty property in request body
     Given the request body property "<required_property>" is set to {}
+    When the request "createAppInstance" is sent
+    Then the response status code is 400
+    And the response header "x-correlator" has same value as the request header "x-correlator"
+    And the response header "Content-Type" is "application/json"
+    And the response property "$.status" is 400
+    And the response property "$.code" is "INVALID_ARGUMENT"
+    And the response property "$.message" contains a user friendly text
+  @eam_createAppInstance_400.5_both_zone_and_cluster_specified
+  Scenario: Error response when both edgeCloudZoneId and kubernetesClusterRef are specified
+    Given the request body property "$.edgeCloudZoneId" is set to a valid edge zone id
+    And the request body property "$.kubernetesClusterRef" is set to a valid kubernetes cluster
+    When the request "createAppInstance" is sent
+    Then the response status code is 400
+    And the response header "x-correlator" has same value as the request header "x-correlator"
+    And the response header "Content-Type" is "application/json"
+    And the response property "$.status" is 400
+    And the response property "$.code" is "INVALID_ARGUMENT"
+    And the response property "$.message" contains a user friendly text
+  @eam_createAppInstance_400.6_kubernetes_cluster_for_non_kubernetes_app
+  Scenario: Error response when kubernetesClusterRef is specified for a non-Kubernetes application
+    Given an application not requiring Kubernetes resources has already been submitted by operation submitApp
+    And the request body property "$.appId" is set to a valid application ID
+    And the request body property "$.kubernetesClusterRef" is set to a valid kubernetes cluster
+    When the request "createAppInstance" is sent
+    Then the response status code is 400
+    And the response header "x-correlator" has same value as the request header "x-correlator"
+    And the response header "Content-Type" is "application/json"
+    And the response property "$.status" is 400
+    And the response property "$.code" is "INVALID_ARGUMENT"
+    And the response property "$.message" contains a user friendly text
+  @eam_createAppInstance_400.7_edge_cloud_zone_for_kubernetes_app
+  Scenario: Error response when edgeCloudZoneId is specified for a Kubernetes application
+    Given an application requiring Kubernetes resources has already been submitted by operation submitApp
+    And the request body property "$.appId" is set to a valid application ID
+    And the request body property "$.edgeCloudZoneId" is set to a valid edge zone id
     When the request "createAppInstance" is sent
     Then the response status code is 400
     And the response header "x-correlator" has same value as the request header "x-correlator"
