@@ -266,10 +266,6 @@ paths:
                 status: 409
                 code: ALREADY_EXISTS
                 message: "App already exists"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
     get:
       security:
         - openId:
@@ -302,10 +298,6 @@ paths:
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/Generic403"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
 
   /apps/{appId}:
     get:
@@ -348,10 +340,6 @@ paths:
           $ref: "#/components/responses/Generic403"
         "404":
           $ref: "#/components/responses/Generic404"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
     delete:
       security:
         - openId:
@@ -405,10 +393,6 @@ paths:
                 status: 409
                 code: INCOMPATIBLE_STATE
                 message: "App with a running application instance cannot be deleted"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
 
   /app-instances:
     post:
@@ -486,10 +470,6 @@ paths:
                 status: 409
                 code: ALREADY_EXISTS
                 message: "Application already instantiated in the given Edge Cloud Zone"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
       callbacks:
         onAppInstanceStatusChange:
           $ref: "#/components/callbacks/onAppInstanceStatusChange"
@@ -546,10 +526,6 @@ paths:
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/Generic403"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
   /app-instances/{appInstanceId}:
     get:
       security:
@@ -591,10 +567,6 @@ paths:
           $ref: "#/components/responses/Generic403"
         "404":
           $ref: "#/components/responses/Generic404"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
     delete:
       security:
         - openId:
@@ -637,10 +609,6 @@ paths:
           $ref: "#/components/responses/Generic403"
         "404":
           $ref: "#/components/responses/Generic404"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
 
   /deployments:
     post:
@@ -727,10 +695,6 @@ paths:
                 status: 409
                 code: ALREADY_EXISTS
                 message: "Deployment already exists"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
       callbacks:
         onAppDeploymentStatusChange:
           $ref: "#/components/callbacks/onAppDeploymentStatusChange"
@@ -779,10 +743,6 @@ paths:
           $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/Generic403"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
   /deployments/{appDeploymentId}:
     get:
       security:
@@ -824,10 +784,6 @@ paths:
           $ref: "#/components/responses/Generic403"
         "404":
           $ref: "#/components/responses/Generic404"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
     delete:
       security:
         - openId:
@@ -864,10 +820,6 @@ paths:
           $ref: "#/components/responses/Generic403"
         "404":
           $ref: "#/components/responses/Generic404"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
 
   /deployments/{appDeploymentId}/add-edge-cloud-zone:
     post:
@@ -935,10 +887,6 @@ paths:
                 status: 409
                 code: ALREADY_EXISTS
                 message: "Edge Cloud Zone already part of the deployment"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
 
   /deployments/{appDeploymentId}/remove-edge-cloud-zone:
     post:
@@ -1006,10 +954,6 @@ paths:
                 status: 404
                 code: NOT_FOUND
                 message: "Edge Cloud Zone not found in the deployment"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
 
   /deployments/{appDeploymentId}/add-kubernetes-cluster:
     post:
@@ -1077,10 +1021,6 @@ paths:
                 status: 409
                 code: ALREADY_EXISTS
                 message: "Kubernetes cluster already part of the deployment"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
 
   /deployments/{appDeploymentId}/remove-kubernetes-cluster:
     post:
@@ -1148,10 +1088,6 @@ paths:
                 status: 404
                 code: NOT_FOUND
                 message: "Kubernetes cluster not found in the deployment"
-        "500":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic500"
-        "503":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic503"
 
   /edge-cloud-zones:
     get:
