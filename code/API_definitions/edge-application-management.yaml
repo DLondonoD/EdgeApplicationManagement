@@ -127,7 +127,7 @@ info:
     including their status, geographical country code and, when applicable,
     the Kubernetes clusters available within each zone. Results can be
     filtered by country code, Edge Cloud Provider, Edge Cloud
-    Provider-specific region and status.
+    Provider-specific region, Kubernetes cluster and status.
 
     <!-- CAMARA:MANDATORY:authorization-and-authentication:BEGIN -->
 
@@ -1200,8 +1200,8 @@ paths:
         List of the provider's Edge Cloud Zones, including their status and,
         when applicable, the Kubernetes clusters available within each zone.
         Results can be filtered by country code, Edge Cloud Provider,
-        Edge Cloud Provider-specific region and status, and are returned as
-        a paginated collection.
+        Edge Cloud Provider-specific region, Kubernetes cluster and status,
+        and are returned as a paginated collection.
       operationId: getEdgeCloudZones
       parameters:
         - $ref: "#/components/parameters/x-correlator"
@@ -1234,6 +1234,18 @@ paths:
           required: false
           schema:
             $ref: "#/components/schemas/EdgeCloudRegion"
+        - name: clusterRef
+          description: |
+            A globally unique identifier for a Kubernetes cluster. When
+            specified, only the Edge Cloud Zone containing that cluster is
+            returned, with the matching cluster included in its `clusters`
+            property. Useful to find the Edge Cloud Zone associated with a
+            `kubernetesClusterRef` already known to the API consumer, e.g.
+            from a previous createAppInstance/createAppDeployment response.
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/KubernetesClusterRef"
         - name: status
           description: |
             Status of the Edge Cloud Zone to filter by. If omitted, Edge
