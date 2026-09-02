@@ -2072,10 +2072,11 @@ components:
       description: |
         Kubernetes cluster information. Returned nested within the Edge
         Cloud Zone it belongs to, so identifiers already provided by the
-        enclosing Edge Cloud Zone (zone id, region) are not repeated here.
+        enclosing Edge Cloud Zone (zone id, edgeCloudProvider, region) are
+        not repeated here. A cluster cannot belong to a different Edge
+        Cloud Provider than the Edge Cloud Zone that contains it.
       required:
         - name
-        - edgeCloudProvider
         - clusterRef
       properties:
         name:
@@ -2083,8 +2084,6 @@ components:
           maxLength: 64
           description: |
             Name of the Cluster, scoped to the Edge Cloud Provider
-        edgeCloudProvider:
-          $ref: "#/components/schemas/EdgeCloudProvider"
         clusterRef:
           $ref: "#/components/schemas/KubernetesClusterRef"
         version:
