@@ -940,20 +940,7 @@ paths:
         "403":
           $ref: "#/components/responses/Generic403"
         "404":
-          description: |
-            The application deployment, or the given Edge Cloud Zone within
-            it, was not found.
-          headers:
-            x-correlator:
-              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorInfo"
-              example:
-                status: 404
-                code: NOT_FOUND
-                message: "Edge Cloud Zone not found in the deployment"
+          $ref: "#/components/responses/Generic404"
 
   /deployments/{appDeploymentId}/add-kubernetes-cluster:
     post:
