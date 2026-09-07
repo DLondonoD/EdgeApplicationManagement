@@ -25,7 +25,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation submitApp
     And the request body property "$.appProvider" is set to a application provider
     And the request body property "$.version" is set to a valid version
     And the request body property "$.packageType" is set to a valid package type
-    And the request body property "$.appRepo" is set to a valid repository
+    And the request body property "$.repository" is set to a valid repository
     And the request body property "$.requiredResources" is set to a valid required resources object
     And the request body property "$.componentSpec" is set to a valid object
     When the request "submitApp" is sent

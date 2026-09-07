@@ -47,6 +47,76 @@ info:
     Application Provider can terminate an instance of an application
     (appInstanceId) or all the instances for a given appId.
 
+    # Terminology and external references
+    This API assumes familiarity with edge computing and application
+    packaging/deployment concepts. The following external references
+    define terms used throughout this API that are not otherwise
+    specified below:
+    * **Kubernetes** and **Kubernetes cluster**: see the
+    [Kubernetes documentation](https://kubernetes.io/docs/concepts/overview/).
+    * **Helm chart** (one of the `packageType`/`AppManifest.repository`
+    package formats): see the
+    [Helm documentation](https://helm.sh/docs/topics/charts/).
+    * **Docker Compose** file (another `packageType`/`repository`
+    package format): see the
+    [Compose file reference](https://docs.docker.com/compose/compose-file/).
+    * **QCOW2** and **OVA** (virtual machine image `packageType`
+    formats): see the
+    [QEMU QCOW2 image format](https://docs.openstack.org/image-guide/introduction.html)
+    and the
+    [DMTF Open Virtualization Format (OVF/OVA) specification](https://www.dmtf.org/standards/ovf).
+    * **CSAR** (Cloud Service Archive `packageType` format): see the
+    [OASIS TOSCA specification](https://www.oasis-open.org/committees/tosca/).
+    * **CNI** (Container Network Interface, used by
+    `KubernetesNetworking.primaryNetwork.provider`): see the
+    [CNI specification](https://github.com/containernetworking/cni).
+    * **SR-IOV** network interfaces (`networkInterfaces[].interfaceType`):
+    see the
+    [PCI-SIG SR-IOV overview](https://www.kernel.org/doc/html/latest/PCI/pci-iov-howto.html).
+    * **CloudEvents** (the notification envelope used by this API's
+    callbacks): see the [CloudEvents specification](https://cloudevents.io/).
+    * **ISO 3166-1 alpha-2** country codes (`countryCode`): see the
+    [ISO 3166 country codes registry](https://www.iso.org/obp/ui/#search/code/).
+    * **RFC 3339** date-times and **RFC 3986** URIs: see
+    [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339) and
+    [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986).
+
+    # Application Lifecycle
+    This section walks through a typical, end-to-end use of the API by
+    an Application Provider, from submitting an application to
+    withdrawing it:
+    1. **Submit the application**: call `submitApp` with the
+    application's metadata (package location, required resources,
+    etc). The Edge Cloud Provider validates it and returns an `appId`.
+    2. **Discover where to run it**: call `getEdgeCloudZones` to list
+    the Edge Cloud Zones (optionally filtered by country code, Edge
+    Cloud Provider, region or status) that meet the desired criteria.
+    If the application requires Kubernetes resources, inspect the
+    `clusters` property of the returned zones (or filter directly by
+    `kubernetesClusterRef`) to choose a specific Kubernetes cluster
+    instead of a zone; see "Kubernetes vs. compute/memory/storage
+    applications" below.
+    3. **Instantiate the application**: call `createAppInstance` for a
+    single, standalone instance, or `createAppDeployment` to create and
+    maintain several instances as one managed unit across multiple
+    Edge Cloud Zones/clusters.
+    4. **Monitor**: poll `getAppInstance`/`getAppInstances` or
+    `getAppDeployment`/`getAppDeployments`, or subscribe to
+    `onAppInstanceStatusChange`/`onAppDeploymentStatusChange` callback
+    notifications, to track status transitions (`instantiating` ->
+    `ready`, or `failed`).
+    5. **Evolve a deployment** (deployments only): grow or shrink the
+    set of Edge Cloud Zones/Kubernetes clusters a deployment runs on
+    via `addEdgeCloudZone`/`removeEdgeCloudZone` or
+    `addKubernetesCluster`/`removeKubernetesCluster`, as demand changes.
+    6. **Terminate**: call `deleteAppInstance` to remove a standalone
+    instance, or `deleteAppDeployment` to terminate an entire deployment
+    and all of its instances at once.
+    7. **Withdraw the application**: once no instance of the application
+    remains running, call `deleteApp` to remove its metadata from the
+    Edge Cloud Provider; `deleteApp` is rejected while any instance is
+    still running.
+
     # Kubernetes vs. compute/memory/storage applications
     Applications declare their infrastructure requirements through the
     `requiredResources` property, either as Kubernetes resources or as
@@ -54,7 +124,7 @@ info:
     Docker Compose based).
 
     This distinction determines how the application is placed:
-    * For **Kubernetes** applications (`requiredResources.infraKind` is
+    * For **Kubernetes** applications (`requiredResources.infrastructureKind` is
     `kubernetes`), the API consumer selects one or more existing Kubernetes
     clusters (`kubernetesClusterRef`/`kubernetesClusterRefs`), obtained via
     the `clusters` property of `getEdgeCloudZones`, to run the application
@@ -70,13 +140,13 @@ info:
     through a `oneOf` request body in `createAppInstance` and
     `createAppDeployment`), a conflict between specified Edge Cloud Zones
     and the zones implied by specified Kubernetes clusters cannot occur:
-    specifying the wrong one for the application's `infraKind`, specifying
+    specifying the wrong one for the application's `infrastructureKind`, specifying
     both, or specifying neither, all result in a `400 INVALID_ARGUMENT`
     response. Similarly, the deployment-scoped `addEdgeCloudZone` /
     `removeEdgeCloudZone` and `addKubernetesCluster` /
     `removeKubernetesCluster` operations are mutually exclusive per
     deployment: using the pair that does not match the deployment's
-    `infraKind` results in a `409 INCOMPATIBLE_STATE` response.
+    `infrastructureKind` results in a `409 INCOMPATIBLE_STATE` response.
 
     # Quick Start
     The usage of this API is based on several resources including GSMA
@@ -239,10 +309,6 @@ tags:
     description: Application and Application Instance Lice Cycle Management
   - name: Edge Cloud
     description: Edge Cloud Zones Availability
-  - name: App Instance CALLBACK Operation
-    description: Operations for handling application instance callback notifications
-  - name: App Deployment CALLBACK Operation
-    description: Operations for handling application deployment callback notifications
 paths:
   /apps:
     post:
@@ -439,17 +505,17 @@ paths:
 
         Exactly one of `edgeCloudZoneId` or `kubernetesClusterRef` MUST be
         specified, never both. `kubernetesClusterRef` is mandatory when the
-        application's `requiredResources.infraKind` is `kubernetes` (the
+        application's `requiredResources.infrastructureKind` is `kubernetes` (the
         Edge Cloud Zone is then implied by the given cluster, and MUST NOT
-        be specified separately); for any other `infraKind`,
+        be specified separately); for any other `infrastructureKind`,
         `edgeCloudZoneId` is mandatory and `kubernetesClusterRef` MUST NOT
         be specified. Since only one of the two can ever be given, a
         conflict between a specified Edge Cloud Zone and a specified
         Kubernetes cluster's own zone cannot occur.
 
         Providing `kubernetesClusterRef` for an application whose
-        `infraKind` is not `kubernetes`, providing `edgeCloudZoneId` for an
-        application whose `infraKind` is `kubernetes`, providing both, or
+        `infrastructureKind` is not `kubernetes`, providing `edgeCloudZoneId` for an
+        application whose `infrastructureKind` is `kubernetes`, providing both, or
         providing neither, all result in a `400 INVALID_ARGUMENT` response.
       operationId: createAppInstance
       parameters:
@@ -657,17 +723,17 @@ paths:
 
         Exactly one of `edgeCloudZones` or `kubernetesClusterRefs` MUST be
         specified, never both. `kubernetesClusterRefs` is mandatory when the
-        application's `requiredResources.infraKind` is `kubernetes` (the
+        application's `requiredResources.infrastructureKind` is `kubernetes` (the
         Edge Cloud Zones are then implied by the given clusters, and MUST
-        NOT be specified separately); for any other `infraKind`,
+        NOT be specified separately); for any other `infrastructureKind`,
         `edgeCloudZones` is mandatory and `kubernetesClusterRefs` MUST NOT
         be specified. Since only one of the two can ever be given, a
         conflict between specified Edge Cloud Zones and the zones
         associated with specified Kubernetes clusters cannot occur.
 
         Providing `kubernetesClusterRefs` for an application whose
-        `infraKind` is not `kubernetes`, providing `edgeCloudZones` for an
-        application whose `infraKind` is `kubernetes`, providing both, or
+        `infrastructureKind` is not `kubernetes`, providing `edgeCloudZones` for an
+        application whose `infrastructureKind` is `kubernetes`, providing both, or
         providing neither, all result in a `400 INVALID_ARGUMENT` response.
       operationId: createAppDeployment
       parameters:
@@ -863,7 +929,7 @@ paths:
         Cloud Zone, instantiating the application there.
 
         Only applicable to deployments whose application does not require
-        Kubernetes resources (`requiredResources.infraKind` other than
+        Kubernetes resources (`requiredResources.infrastructureKind` other than
         `kubernetes`); for Kubernetes-based deployments, use
         addKubernetesCluster instead. Using this operation on a
         Kubernetes-based deployment results in a
@@ -946,7 +1012,7 @@ paths:
         remove it from the deployment.
 
         Only applicable to deployments whose application does not require
-        Kubernetes resources (`requiredResources.infraKind` other than
+        Kubernetes resources (`requiredResources.infrastructureKind` other than
         `kubernetes`); for Kubernetes-based deployments, use
         removeKubernetesCluster instead. Using this operation on a
         Kubernetes-based deployment results in a
@@ -1020,7 +1086,7 @@ paths:
         part of the deployment, to be used by the application deployment.
 
         Only applicable to deployments whose application requires
-        Kubernetes resources (`requiredResources.infraKind` is
+        Kubernetes resources (`requiredResources.infrastructureKind` is
         `kubernetes`); for other deployments, use addEdgeCloudZone instead.
         Using this operation on a non-Kubernetes-based deployment results
         in a `409 INCOMPATIBLE_STATE` response.
@@ -1102,7 +1168,7 @@ paths:
         deployment.
 
         Only applicable to deployments whose application requires
-        Kubernetes resources (`requiredResources.infraKind` is
+        Kubernetes resources (`requiredResources.infrastructureKind` is
         `kubernetes`); for other deployments, use removeEdgeCloudZone
         instead. Using this operation on a non-Kubernetes-based deployment
         results in a `409 INCOMPATIBLE_STATE` response.
@@ -1208,7 +1274,7 @@ paths:
           required: false
           schema:
             $ref: "#/components/schemas/EdgeCloudRegion"
-        - name: clusterRef
+        - name: kubernetesClusterRef
           description: |
             A globally unique identifier for a Kubernetes cluster. When
             specified, only the Edge Cloud Zone containing that cluster is
@@ -1359,8 +1425,6 @@ components:
     onAppInstanceStatusChange:
       "{$request.body#/subscriptionRequest/sink}":
         post:
-          tags:
-            - App Instance CALLBACK Operation
           summary:
             Provide a notification for a change in status of the instantiated
             application
@@ -1402,8 +1466,6 @@ components:
     onAppDeploymentStatusChange:
       "{$request.body#/subscriptionRequest/sink}":
         post:
-          tags:
-            - App Deployment CALLBACK Operation
           summary: Provide a notification for a change in status of the deployed
             application
           description: |
@@ -1653,7 +1715,7 @@ components:
       type: object
       description: |
         Application deployment creation request specifying Edge Cloud Zones
-        directly. Used for applications whose `requiredResources.infraKind`
+        directly. Used for applications whose `requiredResources.infrastructureKind`
         is not `kubernetes`.
       required:
         - appDeploymentName
@@ -1678,7 +1740,7 @@ components:
       description: |
         Application deployment creation request specifying Kubernetes
         clusters. Mandatory for applications whose
-        `requiredResources.infraKind` is `kubernetes`; the Edge Cloud Zones
+        `requiredResources.infrastructureKind` is `kubernetes`; the Edge Cloud Zones
         are implied by the given clusters and MUST NOT be specified
         separately.
       required:
@@ -1800,7 +1862,7 @@ components:
       description: |
         Application instance creation request specifying the Edge Cloud
         Zone directly. Used for applications whose
-        `requiredResources.infraKind` is not `kubernetes`.
+        `requiredResources.infrastructureKind` is not `kubernetes`.
       required:
         - name
         - appId
@@ -1820,7 +1882,7 @@ components:
       description: |
         Application instance creation request specifying a Kubernetes
         cluster. Mandatory for applications whose
-        `requiredResources.infraKind` is `kubernetes`; the Edge Cloud Zone
+        `requiredResources.infrastructureKind` is `kubernetes`; the Edge Cloud Zone
         is implied by the given cluster and MUST NOT be specified
         separately.
       required:
@@ -1867,7 +1929,13 @@ components:
           maxLength: 64
           description: Application version information
         packageType:
-          description: Format of the application image package
+          description: |
+            Format of the application image package. See
+            [Helm charts](https://helm.sh/docs/topics/charts/) for `HELM`,
+            the [QCOW2 image format](https://docs.openstack.org/image-guide/introduction.html)
+            for `QCOW2`, the [Open Virtualization Format (OVA)](https://www.dmtf.org/standards/ovf)
+            for `OVA`, and [TOSCA Cloud Service Archive (CSAR)](https://www.oasis-open.org/committees/tosca/)
+            for `CSAR`.
           type: string
           enum:
             - QCOW2
@@ -1877,7 +1945,7 @@ components:
             - CSAR
         operatingSystem:
           $ref: "#/components/schemas/OperatingSystem"
-        appRepo:
+        repository:
           description: |
             Repository where Application Provider stores the application image
           type: object
@@ -1936,7 +2004,7 @@ components:
           $ref: "#/components/schemas/RequiredResources"
         componentSpec:
           description: |
-            Information defined in "appRepo" point to the application
+            Information defined in "repository" point to the application
             descriptor e.g. Helm chart, docker-compose yaml file etc.
             The descriptor may contain one or more containers and their
             associated meta-data. A component refers to additional details
@@ -2017,7 +2085,7 @@ components:
         - version
         - appProvider
         - packageType
-        - appRepo
+        - repository
         - requiredResources
         - componentSpec
 
@@ -2051,14 +2119,14 @@ components:
         Cloud Provider than the Edge Cloud Zone that contains it.
       required:
         - name
-        - clusterRef
+        - kubernetesClusterRef
       properties:
         name:
           type: string
           maxLength: 64
           description: |
             Name of the Cluster, scoped to the Edge Cloud Provider
-        clusterRef:
+        kubernetesClusterRef:
           $ref: "#/components/schemas/KubernetesClusterRef"
         version:
           type: string
@@ -2079,9 +2147,10 @@ components:
       minLength: 2
       maxLength: 2
       description: |
-        ISO 3166-1 alpha-2 country code representing the geographical
-        location of the Edge Cloud Zone, independent of any Edge Cloud
-        Provider-specific region naming.
+        [ISO 3166-1 alpha-2](https://www.iso.org/obp/ui/#search) country
+        code representing the geographical location of the Edge Cloud
+        Zone, independent of any Edge Cloud Provider-specific region
+        naming.
       example: "GB"
 
     EdgeCloudProvider:
@@ -2208,7 +2277,7 @@ components:
           maximum: 16
           description: Number of GPUs
 
-    K8sAddons:
+    KubernetesAddons:
       description: |
         Addons for the Kubernetes cluster.
         Additional addons should be defined in application the helm chart
@@ -2225,7 +2294,7 @@ components:
           - monitoring
           - ingress
 
-    K8sNetworking:
+    KubernetesNetworking:
       description: |
         Kubernetes networking definition
       type: object
@@ -2237,7 +2306,9 @@ components:
           type: object
           properties:
             provider:
-              description: CNI provider name
+              description: |
+                Name of the [Container Network Interface (CNI)](https://github.com/containernetworking/cni)
+                provider.
               type: string
               maxLength: 64
               example: cilium
@@ -2262,9 +2333,11 @@ components:
               interfaceType:
                 description: |
                   Type of additional Interface:
-                  netdevice: (SR-IOV) A regular kernel network device in the
+                  netdevice: ([SR-IOV](https://www.kernel.org/doc/html/latest/PCI/pci-iov-howto.html))
+                             A regular kernel network device in the
                              Network Namespace (netns) of the container
-                  vfio-pci: (SR-IOV) A PCI network interface directly mounted
+                  vfio-pci: ([SR-IOV](https://www.kernel.org/doc/html/latest/PCI/pci-iov-howto.html))
+                            A PCI network interface directly mounted
                             in the container
                   interface: Additional interface to be used by cni plugins
                              such as macvlan, ipvlan
@@ -2382,11 +2455,11 @@ components:
       type: object
       description: Definition of Kubernetes Cluster Infrastructure.
       required:
-        - infraKind
+        - infrastructureKind
         - applicationResources
         - isStandalone
       properties:
-        infraKind:
+        infrastructureKind:
           description: Type of infrastructure for the application.
           type: string
           example: kubernetes
@@ -2573,19 +2646,19 @@ components:
           example: 80GB
           pattern: ^\d+(GB|MB)$
         networking:
-          $ref: "#/components/schemas/K8sNetworking"
+          $ref: "#/components/schemas/KubernetesNetworking"
         addons:
-          $ref: "#/components/schemas/K8sAddons"
+          $ref: "#/components/schemas/KubernetesAddons"
 
     VmResources:
       description: Definition of Virtual Machine Infrastructure
       type: object
       required:
-        - infraKind
+        - infrastructureKind
         - numCPU
         - memory
       properties:
-        infraKind:
+        infrastructureKind:
           description: Type of infrastructure for the application.
           type: string
           example: virtualMachine
@@ -2615,11 +2688,11 @@ components:
       description: Definition of Docker Compose Infrastructure
       type: object
       required:
-        - infraKind
+        - infrastructureKind
         - numCPU
         - memory
       properties:
-        infraKind:
+        infrastructureKind:
           description: Type of infrastructure for the application.
           type: string
           example: dockerCompose
@@ -2649,11 +2722,11 @@ components:
       description: Container Infrastructure Definition
       type: object
       required:
-        - infraKind
+        - infrastructureKind
         - numCPU
         - memory
       properties:
-        infraKind:
+        infrastructureKind:
           description: Type of infrastructure for the application.
           type: string
           example: container
@@ -2760,7 +2833,7 @@ components:
         - $ref: "#/components/schemas/ContainerResources"
         - $ref: "#/components/schemas/DockerComposeResources"
       discriminator:
-        propertyName: infraKind
+        propertyName: infrastructureKind
         mapping:
           kubernetes: "#/components/schemas/KubernetesResources"
           virtualMachine: "#/components/schemas/VmResources"
@@ -2780,7 +2853,8 @@ components:
       maxLength: 2048
       example: https://charts.bitnami.com/bitnami/helm/example-chart:0.1.0
       description: |
-        A Uniform Resource Identifier (URI) as per RFC 3986,
+        A Uniform Resource Identifier (URI) as per
+        [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986),
         identifies the endpoint within an Edge Cloud Zone where the user
         equipment may connect to the selected application instance
 
