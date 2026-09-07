@@ -75,6 +75,19 @@ Feature: CAMARA Edge Application Management API, vwip - Operation removeKubernet
     And the response property "$.status" is 404
     And the response property "$.code" is "NOT_FOUND"
     And the response property "$.message" contains a user friendly text
+  # Error 409
+  @eam_removeKubernetesCluster_409.1_incompatible_state
+  Scenario: Remove a Kubernetes cluster from a non-Kubernetes cluster-based deployment
+    Given there is a deployment created by operation createAppDeployment with edgeCloudZones
+    And the request path parameter "$.appDeploymentId" is set to a valid application deployment ID
+    And the request body property "$.kubernetesClusterRef" is set to a valid kubernetes cluster
+    When the request "removeKubernetesCluster" is sent
+    Then the response status code is 409
+    And the response header "Content-Type" is "application/json"
+    And the response header "x-correlator" has same value as the request header "x-correlator"
+    And the response property "$.status" is 409
+    And the response property "$.code" is "INCOMPATIBLE_STATE"
+    And the response property "$.message" contains a user friendly text
   # Error 401
   @eam_removeKubernetesCluster_401.1_missing_access_token
   Scenario: Missing access token

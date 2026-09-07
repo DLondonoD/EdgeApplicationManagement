@@ -30,12 +30,11 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppDeplo
     And the response header "x-correlator" has the same value as the request header "x-correlator"
     And the response body complies with the OAS schema for this operation and status code
     And the response body contains the "appDeploymentId"
-  @eam_createAppDeployment_02_success_scenario_optional_parameters
-  Scenario: Instantiate an Application with mandatory parameters ("appDeploymentName", "appId" and "edgeCloudZoneId" in body) and optional parameter ("kubernetesClusterRefs")
-    Given an application has already been submitted by operation submitApp
+  @eam_createAppDeployment_02_success_scenario_kubernetes_clusters
+  Scenario: Instantiate a Kubernetes application with mandatory parameters ("appDeploymentName", "appId" and "kubernetesClusterRefs" in body)
+    Given an application requiring Kubernetes resources has already been submitted by operation submitApp
     And the request body property "$.appDeploymentName" is set to a valid name
     And the request body property "$.appId" is set to a valid application ID
-    And the request body property "$.edgeCloudZoneId" is set to a valid edge zone id
     And the request body property "$.kubernetesClusterRefs" is set to a valid kubernetes cluster
     When the request "createAppDeployment" is sent
     Then the response status code is 202
@@ -92,6 +91,41 @@ Feature: CAMARA Edge Application Management API, vwip - Operation createAppDeplo
   @eam_createAppDeployment_400.4_empty_property
   Scenario: Error response for empty property in request body
     Given the request body property "<required_property>" is set to {}
+    When the request "createAppDeployment" is sent
+    Then the response status code is 400
+    And the response header "x-correlator" has same value as the request header "x-correlator"
+    And the response header "Content-Type" is "application/json"
+    And the response property "$.status" is 400
+    And the response property "$.code" is "INVALID_ARGUMENT"
+    And the response property "$.message" contains a user friendly text
+  @eam_createAppDeployment_400.5_both_zones_and_clusters_specified
+  Scenario: Error response when both edgeCloudZones and kubernetesClusterRefs are specified
+    Given the request body property "$.edgeCloudZones" is set to a valid list of edge zone ids
+    And the request body property "$.kubernetesClusterRefs" is set to a valid kubernetes cluster
+    When the request "createAppDeployment" is sent
+    Then the response status code is 400
+    And the response header "x-correlator" has same value as the request header "x-correlator"
+    And the response header "Content-Type" is "application/json"
+    And the response property "$.status" is 400
+    And the response property "$.code" is "INVALID_ARGUMENT"
+    And the response property "$.message" contains a user friendly text
+  @eam_createAppDeployment_400.6_kubernetes_clusters_for_non_kubernetes_app
+  Scenario: Error response when kubernetesClusterRefs is specified for a non-Kubernetes application
+    Given an application not requiring Kubernetes resources has already been submitted by operation submitApp
+    And the request body property "$.appId" is set to a valid application ID
+    And the request body property "$.kubernetesClusterRefs" is set to a valid kubernetes cluster
+    When the request "createAppDeployment" is sent
+    Then the response status code is 400
+    And the response header "x-correlator" has same value as the request header "x-correlator"
+    And the response header "Content-Type" is "application/json"
+    And the response property "$.status" is 400
+    And the response property "$.code" is "INVALID_ARGUMENT"
+    And the response property "$.message" contains a user friendly text
+  @eam_createAppDeployment_400.7_edge_cloud_zones_for_kubernetes_app
+  Scenario: Error response when edgeCloudZones is specified for a Kubernetes application
+    Given an application requiring Kubernetes resources has already been submitted by operation submitApp
+    And the request body property "$.appId" is set to a valid application ID
+    And the request body property "$.edgeCloudZones" is set to a valid list of edge zone ids
     When the request "createAppDeployment" is sent
     Then the response status code is 400
     And the response header "x-correlator" has same value as the request header "x-correlator"

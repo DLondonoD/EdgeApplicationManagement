@@ -47,6 +47,37 @@ info:
     Application Provider can terminate an instance of an application
     (appInstanceId) or all the instances for a given appId.
 
+    # Kubernetes vs. compute/memory/storage applications
+    Applications declare their infrastructure requirements through the
+    `requiredResources` property, either as Kubernetes resources or as
+    generic compute/memory/storage resources (Virtual Machine, Container or
+    Docker Compose based).
+
+    This distinction determines how the application is placed:
+    * For **Kubernetes** applications (`requiredResources.infraKind` is
+    `kubernetes`), the API consumer selects one or more existing Kubernetes
+    clusters (`kubernetesClusterRef`/`kubernetesClusterRefs`), obtained via
+    the `clusters` property of `getEdgeCloudZones`, to run the application
+    on. The Edge Cloud Zone hosting each cluster does not need to be, and
+    MUST NOT be, separately specified: it is implied by the selected
+    cluster(s).
+    * For all **other** applications, the API consumer selects one or more
+    Edge Cloud Zones directly (`edgeCloudZoneId`/`edgeCloudZones`), obtained
+    via `getEdgeCloudZones`.
+
+    Since exactly one of these two mutually exclusive ways of specifying
+    where to run the application applies to any given application (enforced
+    through a `oneOf` request body in `createAppInstance` and
+    `createAppDeployment`), a conflict between specified Edge Cloud Zones
+    and the zones implied by specified Kubernetes clusters cannot occur:
+    specifying the wrong one for the application's `infraKind`, specifying
+    both, or specifying neither, all result in a `400 INVALID_ARGUMENT`
+    response. Similarly, the deployment-scoped `addEdgeCloudZone` /
+    `removeEdgeCloudZone` and `addKubernetesCluster` /
+    `removeKubernetesCluster` operations are mutually exclusive per
+    deployment: using the pair that does not match the deployment's
+    `infraKind` results in a `409 INCOMPATIBLE_STATE` response.
+
     # Quick Start
     The usage of this API is based on several resources including GSMA
     Edge Platform, Public Cloud and SDOs, to define a first approach on the
@@ -96,7 +127,7 @@ info:
     including their status, geographical country code and, when applicable,
     the Kubernetes clusters available within each zone. Results can be
     filtered by country code, Edge Cloud Provider, Edge Cloud
-    Provider-specific region and status.
+    Provider-specific region, Kubernetes cluster and status.
 
     <!-- CAMARA:MANDATORY:authorization-and-authentication:BEGIN -->
 
@@ -405,6 +436,21 @@ paths:
       description: |
         Ask the Edge Cloud Platform to instantiate an application to an
         Edge Cloud Zone.
+
+        Exactly one of `edgeCloudZoneId` or `kubernetesClusterRef` MUST be
+        specified, never both. `kubernetesClusterRef` is mandatory when the
+        application's `requiredResources.infraKind` is `kubernetes` (the
+        Edge Cloud Zone is then implied by the given cluster, and MUST NOT
+        be specified separately); for any other `infraKind`,
+        `edgeCloudZoneId` is mandatory and `kubernetesClusterRef` MUST NOT
+        be specified. Since only one of the two can ever be given, a
+        conflict between a specified Edge Cloud Zone and a specified
+        Kubernetes cluster's own zone cannot occur.
+
+        Providing `kubernetesClusterRef` for an application whose
+        `infraKind` is not `kubernetes`, providing `edgeCloudZoneId` for an
+        application whose `infraKind` is `kubernetes`, providing both, or
+        providing neither, all result in a `400 INVALID_ARGUMENT` response.
       operationId: createAppInstance
       parameters:
         - $ref: "#/components/parameters/x-correlator"
@@ -414,22 +460,9 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - name
-                - appId
-                - edgeCloudZoneId
-              properties:
-                name:
-                  $ref: "#/components/schemas/AppInstanceName"
-                appId:
-                  $ref: "#/components/schemas/AppId"
-                edgeCloudZoneId:
-                  $ref: "#/components/schemas/EdgeCloudZoneId"
-                kubernetesClusterRef:
-                  $ref: "#/components/schemas/KubernetesClusterRef"
-                subscriptionRequest:
-                  $ref: "#/components/schemas/SubscriptionRequest"
+              oneOf:
+                - $ref: "#/components/schemas/AppInstanceZoneRequest"
+                - $ref: "#/components/schemas/AppInstanceClusterRequest"
         required: true
       responses:
         "202":
@@ -621,6 +654,21 @@ paths:
       description: |
         Ask the Edge Cloud Platform to instantiate an application to several
         Edge Cloud Zones.
+
+        Exactly one of `edgeCloudZones` or `kubernetesClusterRefs` MUST be
+        specified, never both. `kubernetesClusterRefs` is mandatory when the
+        application's `requiredResources.infraKind` is `kubernetes` (the
+        Edge Cloud Zones are then implied by the given clusters, and MUST
+        NOT be specified separately); for any other `infraKind`,
+        `edgeCloudZones` is mandatory and `kubernetesClusterRefs` MUST NOT
+        be specified. Since only one of the two can ever be given, a
+        conflict between specified Edge Cloud Zones and the zones
+        associated with specified Kubernetes clusters cannot occur.
+
+        Providing `kubernetesClusterRefs` for an application whose
+        `infraKind` is not `kubernetes`, providing `edgeCloudZones` for an
+        application whose `infraKind` is `kubernetes`, providing both, or
+        providing neither, all result in a `400 INVALID_ARGUMENT` response.
       operationId: createAppDeployment
       parameters:
         - $ref: "#/components/parameters/x-correlator"
@@ -630,28 +678,9 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - appDeploymentName
-                - appId
-                - edgeCloudZones
-              properties:
-                appDeploymentName:
-                  $ref: "#/components/schemas/AppDeploymentName"
-                appId:
-                  $ref: "#/components/schemas/AppId"
-                edgeCloudZones:
-                  type: array
-                  maxItems: 100
-                  items:
-                    $ref: "#/components/schemas/EdgeCloudZoneId"
-                kubernetesClusterRefs:
-                  type: array
-                  maxItems: 100
-                  items:
-                    $ref: "#/components/schemas/KubernetesClusterRef"
-                subscriptionRequest:
-                  $ref: "#/components/schemas/SubscriptionRequest"
+              oneOf:
+                - $ref: "#/components/schemas/AppDeploymentZoneRequest"
+                - $ref: "#/components/schemas/AppDeploymentClusterRequest"
         required: true
       responses:
         "202":
@@ -832,6 +861,13 @@ paths:
       description: |
         Extend an existing application deployment to an additional Edge
         Cloud Zone, instantiating the application there.
+
+        Only applicable to deployments whose application does not require
+        Kubernetes resources (`requiredResources.infraKind` other than
+        `kubernetes`); for Kubernetes-based deployments, use
+        addKubernetesCluster instead. Using this operation on a
+        Kubernetes-based deployment results in a
+        `409 INCOMPATIBLE_STATE` response.
       operationId: addEdgeCloudZone
       parameters:
         - $ref: "#/components/parameters/x-correlator"
@@ -883,10 +919,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorInfo"
-              example:
-                status: 409
-                code: ALREADY_EXISTS
-                message: "Edge Cloud Zone already part of the deployment"
+              examples:
+                ALREADY_EXISTS:
+                  description: Edge Cloud Zone already part of the deployment
+                  value:
+                    status: 409
+                    code: ALREADY_EXISTS
+                    message: "Edge Cloud Zone already part of the deployment"
+                INCOMPATIBLE_STATE:
+                  description: Deployment is Kubernetes cluster-based
+                  value:
+                    status: 409
+                    code: INCOMPATIBLE_STATE
+                    message: "Deployment is Kubernetes cluster-based; use addKubernetesCluster instead"
 
   /deployments/{appDeploymentId}/remove-edge-cloud-zone:
     post:
@@ -899,6 +944,13 @@ paths:
       description: |
         Terminate the application instance in the given Edge Cloud Zone and
         remove it from the deployment.
+
+        Only applicable to deployments whose application does not require
+        Kubernetes resources (`requiredResources.infraKind` other than
+        `kubernetes`); for Kubernetes-based deployments, use
+        removeKubernetesCluster instead. Using this operation on a
+        Kubernetes-based deployment results in a
+        `409 INCOMPATIBLE_STATE` response.
       operationId: removeEdgeCloudZone
       parameters:
         - $ref: "#/components/parameters/x-correlator"
@@ -941,6 +993,19 @@ paths:
           $ref: "#/components/responses/Generic403"
         "404":
           $ref: "#/components/responses/Generic404"
+        "409":
+          description: Conflict
+          headers:
+            x-correlator:
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              example:
+                status: 409
+                code: INCOMPATIBLE_STATE
+                message: "Deployment is Kubernetes cluster-based; use removeKubernetesCluster instead"
 
   /deployments/{appDeploymentId}/add-kubernetes-cluster:
     post:
@@ -953,6 +1018,12 @@ paths:
       description: |
         Add a specific Kubernetes cluster, within an Edge Cloud Zone already
         part of the deployment, to be used by the application deployment.
+
+        Only applicable to deployments whose application requires
+        Kubernetes resources (`requiredResources.infraKind` is
+        `kubernetes`); for other deployments, use addEdgeCloudZone instead.
+        Using this operation on a non-Kubernetes-based deployment results
+        in a `409 INCOMPATIBLE_STATE` response.
       operationId: addKubernetesCluster
       parameters:
         - $ref: "#/components/parameters/x-correlator"
@@ -1004,10 +1075,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorInfo"
-              example:
-                status: 409
-                code: ALREADY_EXISTS
-                message: "Kubernetes cluster already part of the deployment"
+              examples:
+                ALREADY_EXISTS:
+                  description: Kubernetes cluster already part of the deployment
+                  value:
+                    status: 409
+                    code: ALREADY_EXISTS
+                    message: "Kubernetes cluster already part of the deployment"
+                INCOMPATIBLE_STATE:
+                  description: Deployment is not Kubernetes cluster-based
+                  value:
+                    status: 409
+                    code: INCOMPATIBLE_STATE
+                    message: "Deployment is not Kubernetes cluster-based; use addEdgeCloudZone instead"
 
   /deployments/{appDeploymentId}/remove-kubernetes-cluster:
     post:
@@ -1020,6 +1100,12 @@ paths:
       description: |
         Stop using the given Kubernetes cluster for the application
         deployment.
+
+        Only applicable to deployments whose application requires
+        Kubernetes resources (`requiredResources.infraKind` is
+        `kubernetes`); for other deployments, use removeEdgeCloudZone
+        instead. Using this operation on a non-Kubernetes-based deployment
+        results in a `409 INCOMPATIBLE_STATE` response.
       operationId: removeKubernetesCluster
       parameters:
         - $ref: "#/components/parameters/x-correlator"
@@ -1061,9 +1147,9 @@ paths:
         "403":
           $ref: "#/components/responses/Generic403"
         "404":
-          description: |
-            The application deployment, or the given Kubernetes cluster
-            within it, was not found.
+          $ref: "#/components/responses/Generic404"
+        "409":
+          description: Conflict
           headers:
             x-correlator:
               $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
@@ -1072,9 +1158,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorInfo"
               example:
-                status: 404
-                code: NOT_FOUND
-                message: "Kubernetes cluster not found in the deployment"
+                status: 409
+                code: INCOMPATIBLE_STATE
+                message: "Deployment is not Kubernetes cluster-based; use removeEdgeCloudZone instead"
 
   /edge-cloud-zones:
     get:
@@ -1088,8 +1174,8 @@ paths:
         List of the provider's Edge Cloud Zones, including their status and,
         when applicable, the Kubernetes clusters available within each zone.
         Results can be filtered by country code, Edge Cloud Provider,
-        Edge Cloud Provider-specific region and status, and are returned as
-        a paginated collection.
+        Edge Cloud Provider-specific region, Kubernetes cluster and status,
+        and are returned as a paginated collection.
       operationId: getEdgeCloudZones
       parameters:
         - $ref: "#/components/parameters/x-correlator"
@@ -1122,6 +1208,18 @@ paths:
           required: false
           schema:
             $ref: "#/components/schemas/EdgeCloudRegion"
+        - name: clusterRef
+          description: |
+            A globally unique identifier for a Kubernetes cluster. When
+            specified, only the Edge Cloud Zone containing that cluster is
+            returned, with the matching cluster included in its `clusters`
+            property. Useful to find the Edge Cloud Zone associated with a
+            `kubernetesClusterRef` already known to the API consumer, e.g.
+            from a previous createAppInstance/createAppDeployment response.
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/KubernetesClusterRef"
         - name: status
           description: |
             Status of the Edge Cloud Zone to filter by. If omitted, Edge
@@ -1551,6 +1649,56 @@ components:
         of an application. Edge Cloud Platform generates this identifier when
         the deployment request in the Edge Cloud Zone is successful.
 
+    AppDeploymentZoneRequest:
+      type: object
+      description: |
+        Application deployment creation request specifying Edge Cloud Zones
+        directly. Used for applications whose `requiredResources.infraKind`
+        is not `kubernetes`.
+      required:
+        - appDeploymentName
+        - appId
+        - edgeCloudZones
+      properties:
+        appDeploymentName:
+          $ref: "#/components/schemas/AppDeploymentName"
+        appId:
+          $ref: "#/components/schemas/AppId"
+        edgeCloudZones:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/EdgeCloudZoneId"
+        subscriptionRequest:
+          $ref: "#/components/schemas/SubscriptionRequest"
+
+    AppDeploymentClusterRequest:
+      type: object
+      description: |
+        Application deployment creation request specifying Kubernetes
+        clusters. Mandatory for applications whose
+        `requiredResources.infraKind` is `kubernetes`; the Edge Cloud Zones
+        are implied by the given clusters and MUST NOT be specified
+        separately.
+      required:
+        - appDeploymentName
+        - appId
+        - kubernetesClusterRefs
+      properties:
+        appDeploymentName:
+          $ref: "#/components/schemas/AppDeploymentName"
+        appId:
+          $ref: "#/components/schemas/AppId"
+        kubernetesClusterRefs:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/KubernetesClusterRef"
+        subscriptionRequest:
+          $ref: "#/components/schemas/SubscriptionRequest"
+
     AppDeploymentInfo:
       description: Information about the application deployment.
       type: object
@@ -1646,6 +1794,48 @@ components:
           $ref: "#/components/schemas/KubernetesClusterRef"
         edgeCloudZoneId:
           $ref: "#/components/schemas/EdgeCloudZoneId"
+
+    AppInstanceZoneRequest:
+      type: object
+      description: |
+        Application instance creation request specifying the Edge Cloud
+        Zone directly. Used for applications whose
+        `requiredResources.infraKind` is not `kubernetes`.
+      required:
+        - name
+        - appId
+        - edgeCloudZoneId
+      properties:
+        name:
+          $ref: "#/components/schemas/AppInstanceName"
+        appId:
+          $ref: "#/components/schemas/AppId"
+        edgeCloudZoneId:
+          $ref: "#/components/schemas/EdgeCloudZoneId"
+        subscriptionRequest:
+          $ref: "#/components/schemas/SubscriptionRequest"
+
+    AppInstanceClusterRequest:
+      type: object
+      description: |
+        Application instance creation request specifying a Kubernetes
+        cluster. Mandatory for applications whose
+        `requiredResources.infraKind` is `kubernetes`; the Edge Cloud Zone
+        is implied by the given cluster and MUST NOT be specified
+        separately.
+      required:
+        - name
+        - appId
+        - kubernetesClusterRef
+      properties:
+        name:
+          $ref: "#/components/schemas/AppInstanceName"
+        appId:
+          $ref: "#/components/schemas/AppId"
+        kubernetesClusterRef:
+          $ref: "#/components/schemas/KubernetesClusterRef"
+        subscriptionRequest:
+          $ref: "#/components/schemas/SubscriptionRequest"
 
     AppInstanceName:
       type: string
@@ -1856,10 +2046,11 @@ components:
       description: |
         Kubernetes cluster information. Returned nested within the Edge
         Cloud Zone it belongs to, so identifiers already provided by the
-        enclosing Edge Cloud Zone (zone id, region) are not repeated here.
+        enclosing Edge Cloud Zone (zone id, edgeCloudProvider, region) are
+        not repeated here. A cluster cannot belong to a different Edge
+        Cloud Provider than the Edge Cloud Zone that contains it.
       required:
         - name
-        - edgeCloudProvider
         - clusterRef
       properties:
         name:
@@ -1867,8 +2058,6 @@ components:
           maxLength: 64
           description: |
             Name of the Cluster, scoped to the Edge Cloud Provider
-        edgeCloudProvider:
-          $ref: "#/components/schemas/EdgeCloudProvider"
         clusterRef:
           $ref: "#/components/schemas/KubernetesClusterRef"
         version:

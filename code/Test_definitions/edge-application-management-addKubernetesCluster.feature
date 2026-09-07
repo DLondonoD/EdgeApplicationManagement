@@ -45,6 +45,18 @@ Feature: CAMARA Edge Application Management API, vwip - Operation addKubernetesC
     And the response property "$.status" is 409
     And the response property "$.code" is "ALREADY_EXISTS"
     And the response property "$.message" contains a user friendly text
+  @eam_addKubernetesCluster_409.2_incompatible_state
+  Scenario: Add a Kubernetes cluster to a non-Kubernetes cluster-based deployment
+    Given there is a deployment created by operation createAppDeployment with edgeCloudZones
+    And the request path parameter "$.appDeploymentId" is set to a valid application deployment ID
+    And the request body property "$.kubernetesClusterRef" is set to a valid kubernetes cluster
+    When the request "addKubernetesCluster" is sent
+    Then the response status code is 409
+    And the response header "Content-Type" is "application/json"
+    And the response header "x-correlator" has same value as the request header "x-correlator"
+    And the response property "$.status" is 409
+    And the response property "$.code" is "INCOMPATIBLE_STATE"
+    And the response property "$.message" contains a user friendly text
   # Error 400
   @eam_addKubernetesCluster_400.1_schema_not_compliant
   Scenario: Invalid Argument. Generic Syntax Exception
