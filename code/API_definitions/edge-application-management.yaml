@@ -939,6 +939,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               required:
                 - edgeCloudZoneId
               properties:
@@ -1032,6 +1033,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               required:
                 - edgeCloudZoneId
               properties:
@@ -1114,6 +1116,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               required:
                 - kubernetesClusterRef
               properties:
@@ -1206,6 +1209,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               required:
                 - kubernetesClusterRef
               properties:
@@ -1314,6 +1318,10 @@ paths:
           description: |
             Status of the Edge Cloud Zone to filter by. If omitted, Edge
             Cloud Zones are returned regardless of their status.
+            - `active`: the Edge Cloud Zone is available to host applications.
+            - `inactive`: the Edge Cloud Zone is not currently available to
+              host applications.
+            - `unknown`: the status could not be determined.
           in: query
           required: false
           schema:
@@ -1485,6 +1493,9 @@ components:
       type: string
       description: |
         Event-type that could be subscribed through this subscription. Several event-type could be defined.
+        - `org.camaraproject.edge-application-management.v0.app-instance-status-change`: The status of an application instance has changed.
+        - `org.camaraproject.edge-application-management.v0.app-deployment-status-change`: The status of an application deployment has changed.
+        - `org.camaraproject.edge-application-management.v0.subscription-ended`: The subscription has ended.
       enum:
         - org.camaraproject.edge-application-management.v0.app-instance-status-change
         - org.camaraproject.edge-application-management.v0.app-deployment-status-change
@@ -1495,6 +1506,7 @@ components:
         The request for creating an event-type event subscription (implicit
         subscription, HTTP only)
       type: object
+      additionalProperties: false
       required:
         - sink
       properties:
@@ -1621,6 +1633,7 @@ components:
 
     AppDeploymentZoneRequest:
       type: object
+      additionalProperties: false
       description: |
         Application deployment creation request specifying Edge Cloud Zones
         directly. Used for applications whose `requiredResources.infraKind`
@@ -1645,6 +1658,7 @@ components:
 
     AppDeploymentClusterRequest:
       type: object
+      additionalProperties: false
       description: |
         Application deployment creation request specifying Kubernetes
         clusters. Mandatory for applications whose
@@ -1727,7 +1741,13 @@ components:
         appProvider:
           $ref: "#/components/schemas/AppProvider"
         status:
-          description: Status of the application instance (default is 'unknown')
+          description: |
+            Status of the application instance (default is 'unknown'):
+            - `ready`: The instance is running and available.
+            - `instantiating`: The instance is being created.
+            - `failed`: Instantiation failed, or the instance stopped running unexpectedly.
+            - `terminating`: The instance is being terminated.
+            - `unknown`: The status could not be determined.
           type: string
           enum:
             - ready
@@ -1767,6 +1787,7 @@ components:
 
     AppInstanceZoneRequest:
       type: object
+      additionalProperties: false
       description: |
         Application instance creation request specifying the Edge Cloud
         Zone directly. Used for applications whose
@@ -1787,6 +1808,7 @@ components:
 
     AppInstanceClusterRequest:
       type: object
+      additionalProperties: false
       description: |
         Application instance creation request specifying a Kubernetes
         cluster. Mandatory for applications whose
@@ -1837,7 +1859,13 @@ components:
           maxLength: 64
           description: Application version information
         packageType:
-          description: Format of the application image package
+          description: |
+            Format of the application image package:
+            - `QCOW2`: virtual machine image in QEMU QCOW2 format.
+            - `OVA`: virtual machine image in Open Virtualization Format.
+            - `CONTAINER`: container image.
+            - `HELM`: Helm chart for a Kubernetes deployment.
+            - `CSAR`: Cloud Service Archive (TOSCA) package.
           type: string
           enum:
             - QCOW2
@@ -1861,13 +1889,13 @@ components:
                 - PRIVATEREPO
                 - PUBLICREPO
               description: |
-                Application repository and image URI information.
-                PUBLICREPO is used of public urls like github, helm repo etc.
-                PRIVATEREPO  is used for private repo managed by the application
-                developer. Private repo can be accessed by using the app
-                developer provided userName and password. Password is
-                recommended to be the personal access token created by developer
-                e.g. in Github repo.
+                Application repository and image URI information:
+                - `PUBLICREPO`: used for public urls like github, helm repo etc.
+                - `PRIVATEREPO`: used for a private repo managed by the
+                  application developer. Private repo can be accessed by
+                  using the app developer provided userName and password.
+                  Password is recommended to be the personal access token
+                  created by developer e.g. in Github repo.
             imagePath:
               $ref: "#/components/schemas/Uri"
             userName:
@@ -1893,8 +1921,15 @@ components:
                 - HTTP_BEARER
                 - NONE
               description: |
-                The credentials can also be formatted as a Basic
-                auth or Bearer auth in HTTP "Authorization" header.
+                Authentication method used to access the repository:
+                - `DOCKER`: Docker client-style credentials (`credentials`
+                  used as the registry password/personal access token).
+                - `HTTP_BASIC`: `credentials` formatted as HTTP Basic auth
+                  in the "Authorization" header.
+                - `HTTP_BEARER`: `credentials` formatted as an HTTP Bearer
+                  token in the "Authorization" header.
+                - `NONE`: no authentication is required to access the
+                  repository.
             checksum:
               type: string
               maxLength: 128
@@ -1963,20 +1998,23 @@ components:
                         - UDP
                         - ANY
                       description: |
-                        Defines the IP transport communication
-                        protocol i.e., TCP, UDP or ANY
+                        Defines the IP transport communication protocol:
+                        - `TCP`: Transmission Control Protocol.
+                        - `UDP`: User Datagram Protocol.
+                        - `ANY`: either TCP or UDP.
                     port:
                       $ref: "#/components/schemas/Port"
                     visibilityType:
                       description: |
-                        Defines whether the interface is exposed
-                        to outer world or not i.e., external, or internal.
-                        If this is set to "external", then it is  exposed
-                        to external applications otherwise it is exposed
-                        internally to edge application components within
-                        edge cloud. When exposed to external world,
-                        an external dynamic port is assigned for UC traffic
-                        and mapped to the extPort
+                        Defines whether the interface is exposed to the
+                        outer world or not:
+                        - `VISIBILITY_EXTERNAL`: exposed to external
+                          applications. An external dynamic port is
+                          assigned for the traffic and mapped to the
+                          extPort.
+                        - `VISIBILITY_INTERNAL`: exposed only internally to
+                          edge application components within the edge
+                          cloud.
                       type: string
                       enum:
                         - VISIBILITY_EXTERNAL
@@ -2140,7 +2178,12 @@ components:
         the Edge Cloud. Defined by the Edge Cloud Provider.
 
     EdgeCloudZoneStatus:
-      description: Status of the Edge Cloud Zone (default is 'unknown')
+      description: |
+        Status of the Edge Cloud Zone (default is 'unknown'):
+        - `active`: the Edge Cloud Zone is available to host applications.
+        - `inactive`: the Edge Cloud Zone is not currently available to
+          host applications.
+        - `unknown`: the status could not be determined.
       type: string
       enum:
         - active
@@ -2188,8 +2231,9 @@ components:
       uniqueItems: true
       items:
         description: |
-          Addon for the Kubernetes cluster.
-          Examples of addons include monitoring and ingress.
+          Addon for the Kubernetes cluster:
+          - `monitoring`: cluster monitoring addon.
+          - `ingress`: ingress controller addon.
         type: string
         enum:
           - monitoring
@@ -2232,12 +2276,12 @@ components:
               interfaceType:
                 description: |
                   Type of additional Interface:
-                  netdevice: (SR-IOV) A regular kernel network device in the
-                             Network Namespace (netns) of the container
-                  vfio-pci: (SR-IOV) A PCI network interface directly mounted
-                            in the container
-                  interface: Additional interface to be used by cni plugins
-                             such as macvlan, ipvlan
+                  - `netdevice`: (SR-IOV) A regular kernel network device
+                    in the Network Namespace (netns) of the container.
+                  - `vfio-pci`: (SR-IOV) A PCI network interface directly
+                    mounted in the container.
+                  - `interface`: Additional interface to be used by cni
+                    plugins such as macvlan, ipvlan.
                   Note: The use of SR-IOV interfaces automatically
                   configure the required kernel parameters for the nodes.
                 type: string
@@ -2682,14 +2726,23 @@ components:
         - license
       properties:
         architecture:
-          description: Type of the OS Architecture
+          description: |
+            Type of the OS Architecture:
+            - `x86_64`: 64-bit x86 architecture.
+            - `x86`: 32-bit x86 architecture.
           type: string
           enum:
             - x86_64
             - x86
           example: x86_64
         family:
-          description: Family to which OS belongs
+          description: |
+            Family to which the OS belongs:
+            - `RHEL`: Red Hat Enterprise Linux.
+            - `UBUNTU`: Ubuntu.
+            - `COREOS`: Container-optimized Linux (CoreOS).
+            - `WINDOWS`: Microsoft Windows.
+            - `OTHER`: any other OS family.
           type: string
           enum:
             - RHEL
@@ -2698,7 +2751,12 @@ components:
             - WINDOWS
             - OTHER
         version:
-          description: Version of the OS
+          description: |
+            Version of the OS:
+            - `OS_VERSION_UBUNTU_2204_LTS`: Ubuntu 22.04 LTS.
+            - `OS_VERSION_RHEL_8`: Red Hat Enterprise Linux 8.
+            - `OS_MS_WINDOWS_2022`: Microsoft Windows Server 2022.
+            - `OTHER`: any other OS version.
           type: string
           enum:
             - OS_VERSION_UBUNTU_2204_LTS
@@ -2706,7 +2764,12 @@ components:
             - OS_MS_WINDOWS_2022
             - OTHER
         license:
-          description: License needed to activate the OS
+          description: |
+            License needed to activate the OS:
+            - `OS_LICENSE_TYPE_FREE`: no license fee is required.
+            - `OS_LICENSE_TYPE_ON_DEMAND`: a license fee is charged on a
+              pay-as-you-go basis.
+            - `OTHER`: any other licensing model.
           type: string
           enum:
             - OS_LICENSE_TYPE_FREE
