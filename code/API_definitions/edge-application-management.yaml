@@ -61,7 +61,7 @@ info:
     format): see the
     [OCI Image Format Specification](https://specs.opencontainers.org/image-spec/).
     * **Docker Compose** infrastructure (`requiredResources.infrastructureKind: dockerCompose` /
-    `DockerComposeResources` — not a `packageType`): see the
+    `DockerComposeResources`): see the
     [Compose file reference](https://docs.docker.com/compose/compose-file/).
     * **QCOW2** and **OVA** (virtual machine image `packageType`
     formats): see the
@@ -75,7 +75,7 @@ info:
     [CNI specification](https://github.com/containernetworking/cni).
     * **SR-IOV** network interfaces (`networkInterfaces[].interfaceType`):
     see the
-    [PCI-SIG SR-IOV primer](https://cdrdv2-public.intel.com/321211/pci-sig-sr-iov-primer-sr-iov-technology-paper.pdf).
+    [PCI-SIG SR-IOV primer](https://www.intel.la/content/www/xl/es/content-details/321211/pci-sig-sr-iov-primer-an-introduction-to-sr-iov-technology.html).
     * **CloudEvents** (the notification envelope used by this API's
     callbacks): see the [CloudEvents specification](https://cloudevents.io/).
     * **ISO 3166-1 alpha-2** country codes (`countryCode`): see the
