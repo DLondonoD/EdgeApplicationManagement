@@ -1730,6 +1730,9 @@ components:
         appId:
           $ref: "#/components/schemas/AppId"
         edgeCloudZones:
+          description: |
+            List of Edge Cloud Zones where the application deployment
+            will be instantiated.
           type: array
           minItems: 1
           maxItems: 100
@@ -1756,6 +1759,9 @@ components:
         appId:
           $ref: "#/components/schemas/AppId"
         kubernetesClusterRefs:
+          description: |
+            List of Kubernetes clusters where the application deployment
+            will be instantiated.
           type: array
           minItems: 1
           maxItems: 100
