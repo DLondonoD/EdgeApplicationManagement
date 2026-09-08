@@ -469,6 +469,12 @@ paths:
         `infraKind` is not `kubernetes`, providing `edgeCloudZoneId` for an
         application whose `infraKind` is `kubernetes`, providing both, or
         providing neither, all result in a `400 INVALID_ARGUMENT` response.
+
+        If `subscriptionRequest.sink` is provided but the Edge Cloud
+        Platform does not support event notification delivery, the request
+        is rejected with `422 EVENT_NOTIFICATIONS_NOT_SUPPORTED` and the
+        application instance is NOT created; the API consumer may retry
+        without `subscriptionRequest`.
       operationId: createAppInstance
       parameters:
         - $ref: "#/components/parameters/x-correlator"
@@ -530,6 +536,8 @@ paths:
                 status: 409
                 code: ALREADY_EXISTS
                 message: "Application already instantiated in the given Edge Cloud Zone"
+        "422":
+          $ref: "#/components/responses/EventNotificationsNotSupported422"
       callbacks:
         onAppInstanceStatusChange:
           $ref: "#/components/callbacks/onAppInstanceStatusChange"
@@ -696,6 +704,12 @@ paths:
         `infraKind` is not `kubernetes`, providing `edgeCloudZones` for an
         application whose `infraKind` is `kubernetes`, providing both, or
         providing neither, all result in a `400 INVALID_ARGUMENT` response.
+
+        If `subscriptionRequest.sink` is provided but the Edge Cloud
+        Platform does not support event notification delivery, the request
+        is rejected with `422 EVENT_NOTIFICATIONS_NOT_SUPPORTED` and the
+        application deployment is NOT created; the API consumer may retry
+        without `subscriptionRequest`.
       operationId: createAppDeployment
       parameters:
         - $ref: "#/components/parameters/x-correlator"
@@ -760,6 +774,8 @@ paths:
                 status: 409
                 code: ALREADY_EXISTS
                 message: "Deployment already exists"
+        "422":
+          $ref: "#/components/responses/EventNotificationsNotSupported422"
       callbacks:
         onAppDeploymentStatusChange:
           $ref: "#/components/callbacks/onAppDeploymentStatusChange"
@@ -1352,6 +1368,29 @@ components:
       schema:
         $ref: "#/components/schemas/XCorrelator"
 
+  responses:
+    EventNotificationsNotSupported422:
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 422
+                  code:
+                    enum:
+                      - EVENT_NOTIFICATIONS_NOT_SUPPORTED
+          examples:
+            GENERIC_422_EVENT_NOTIFICATIONS_NOT_SUPPORTED:
+              $ref: "../common/CAMARA_event_common.yaml#/components/examples/GENERIC_422_EVENT_NOTIFICATIONS_NOT_SUPPORTED"
+
   callbacks:
     onAppInstanceStatusChange:
       "{$request.body#/subscriptionRequest/sink}":
@@ -1439,46 +1478,6 @@ components:
               $ref: "../common/CAMARA_common.yaml#/components/responses/TooManyRequests429"
 
   schemas:
-    AccessTokenCredential:
-      type: object
-      description:
-        An access token credential. This type of credential is meant to be
-        used by API Consumers that have limited capabilities to handle
-        authorization requests.
-      allOf:
-        - $ref: "#/components/schemas/SinkCredential"
-        - type: object
-          properties:
-            accessToken:
-              description:
-                Access Token granting access to the POST operation to create
-                notification
-              type: string
-              writeOnly: true
-              maxLength: 4096
-            accessTokenExpiresUtc:
-              type: string
-              format: date-time
-              maxLength: 64
-              description: |
-                An absolute UTC instant at which the access token shall be considered expired.
-                Token expiration SHOULD occur after the expiration of the application instance
-                or deployment, allowing the client to be notified of any changes during its
-                existence. If the token expires while the resource is still active, the client
-                will stop receiving notifications. It must
-                follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-              example: "2023-07-03T12:27:08.312Z"
-            accessTokenType:
-              description: Type of access token - MUST be set to bearer for now
-              type: string
-              writeOnly: true
-              enum:
-                - bearer
-          required:
-            - accessToken
-            - accessTokenExpiresUtc
-            - accessTokenType
-
     CloudEvent:
       $ref: "../common/CAMARA_event_common.yaml#/components/schemas/CloudEvent"
 
@@ -1500,14 +1499,7 @@ components:
         - sink
       properties:
         sink:
-          type: string
-          format: uri
-          pattern: ^https:\/\/.+$
-          maxLength: 2048
-          description:
-            The address to which events shall be delivered using the selected
-            protocol.
-          example: "https://endpoint.example.com/sink"
+          $ref: "../common/CAMARA_event_common.yaml#/components/schemas/Sink"
         sinkCredential:
           $ref: "#/components/schemas/SinkCredential"
         types:
@@ -1547,21 +1539,17 @@ components:
       type: object
 
     SinkCredential:
-      description: A sink credential provides authentication or authorization
+      description: |
+        A sink credential provides authentication or authorization
         information necessary to enable delivery of events to a target.
-      type: object
-      required:
-        - credentialType
-      properties:
-        credentialType:
-          type: string
-          enum:
-            - ACCESSTOKEN
-          description: Type of the credential - MUST be set to ACCESSTOKEN for now
-      discriminator:
-        propertyName: credentialType
-        mapping:
-          ACCESSTOKEN: "#/components/schemas/AccessTokenCredential"
+        Only ACCESSTOKEN credentials are currently supported by this API.
+      allOf:
+        - $ref: "../common/CAMARA_event_common.yaml#/components/schemas/AccessTokenCredential"
+        - type: object
+          properties:
+            credentialType:
+              enum:
+                - ACCESSTOKEN
 
     AccessEndpoint:
       type: object
