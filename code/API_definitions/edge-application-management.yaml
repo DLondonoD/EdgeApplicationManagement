@@ -57,22 +57,25 @@ info:
     * **Helm chart** (one of the `packageType`/`AppManifest.repository`
     package formats): see the
     [Helm documentation](https://helm.sh/docs/topics/charts/).
-    * **Docker Compose** file (another `packageType`/`repository`
-    package format): see the
+    * **CONTAINER** images (another `packageType`/`repository` package
+    format): see the
+    [OCI Image Format Specification](https://specs.opencontainers.org/image-spec/).
+    * **Docker Compose** infrastructure (`requiredResources.infrastructureKind: dockerCompose` /
+    `DockerComposeResources` — not a `packageType`): see the
     [Compose file reference](https://docs.docker.com/compose/compose-file/).
     * **QCOW2** and **OVA** (virtual machine image `packageType`
     formats): see the
-    [QEMU QCOW2 image format](https://docs.openstack.org/image-guide/introduction.html)
+    [QEMU QCOW2 image format](https://qemu-project.gitlab.io/qemu/interop/qcow2.html)
     and the
     [DMTF Open Virtualization Format (OVF/OVA) specification](https://www.dmtf.org/standards/ovf).
     * **CSAR** (Cloud Service Archive `packageType` format): see the
-    [OASIS TOSCA specification](https://www.oasis-open.org/committees/tosca/).
+    [OASIS TOSCA specification](https://docs.oasis-open.org/tosca/TOSCA/v2.0/os/TOSCA-v2.0-os.html).
     * **CNI** (Container Network Interface, used by
     `KubernetesNetworking.primaryNetwork.provider`): see the
     [CNI specification](https://github.com/containernetworking/cni).
     * **SR-IOV** network interfaces (`networkInterfaces[].interfaceType`):
     see the
-    [PCI-SIG SR-IOV overview](https://www.kernel.org/doc/html/latest/PCI/pci-iov-howto.html).
+    [PCI-SIG SR-IOV primer](https://cdrdv2-public.intel.com/321211/pci-sig-sr-iov-primer-sr-iov-technology-paper.pdf).
     * **CloudEvents** (the notification envelope used by this API's
     callbacks): see the [CloudEvents specification](https://cloudevents.io/).
     * **ISO 3166-1 alpha-2** country codes (`countryCode`): see the
@@ -1932,9 +1935,10 @@ components:
           description: |
             Format of the application image package. See
             [Helm charts](https://helm.sh/docs/topics/charts/) for `HELM`,
-            the [QCOW2 image format](https://docs.openstack.org/image-guide/introduction.html)
+            the [QCOW2 image format](https://qemu-project.gitlab.io/qemu/interop/qcow2.html)
             for `QCOW2`, the [Open Virtualization Format (OVA)](https://www.dmtf.org/standards/ovf)
-            for `OVA`, and [TOSCA Cloud Service Archive (CSAR)](https://www.oasis-open.org/committees/tosca/)
+            for `OVA`, the [OCI Image Format Specification](https://specs.opencontainers.org/image-spec/)
+            for `CONTAINER`, and [TOSCA Cloud Service Archive (CSAR)](https://docs.oasis-open.org/tosca/TOSCA/v2.0/os/TOSCA-v2.0-os.html)
             for `CSAR`.
           type: string
           enum:
@@ -2147,7 +2151,7 @@ components:
       minLength: 2
       maxLength: 2
       description: |
-        [ISO 3166-1 alpha-2](https://www.iso.org/obp/ui/#search) country
+        [ISO 3166-1 alpha-2](https://www.iso.org/obp/ui/#search/code/) country
         code representing the geographical location of the Edge Cloud
         Zone, independent of any Edge Cloud Provider-specific region
         naming.
