@@ -204,7 +204,7 @@ info:
 
     The list of error codes in this API specification is not exhaustive. Therefore the API specification MAY not document some non-mandatory error statuses as indicated in `CAMARA API Design Guide`.
 
-    Please refer to the `CAMARA_common.yaml` of the Commonalities Release associated to this API version for a complete list of error responses. The applicable Commonalities Release can be identified in the `API Readiness Checklist` document associated to this API version.
+    Please refer to the `CAMARA_common.yaml` of the Commonalities Release associated to this API version for a complete list of error responses. The applicable Commonalities Release can be identified from the `x-camara-commonalities` field, the changelog and the metadata of the released API version.
 
     As a specific rule, error `501 - NOT_IMPLEMENTED` can be only a possible error response if it is explicitly documented in the API.
     <!-- CAMARA:MANDATORY:additional-error-responses:END -->
@@ -217,7 +217,7 @@ info:
     <!-- CAMARA:MANDATORY:request-body-strictness:END -->
 
     ---
-  x-camara-commonalities: 0.8.0
+  x-camara-commonalities: 0.9.0
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -279,11 +279,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/SubmittedApp"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "409":
           description: Conflict
           headers:
@@ -292,7 +292,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorInfo"
+                allOf:
+                  - $ref: "#/components/schemas/ErrorInfo"
+                  - type: object
+                    properties:
+                      status:
+                        enum:
+                          - 409
+                      code:
+                        enum:
+                          - ALREADY_EXISTS
               example:
                 status: 409
                 code: ALREADY_EXISTS
@@ -324,11 +333,11 @@ paths:
                 items:
                   $ref: "#/components/schemas/AppManifestInfo"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
 
   /apps/{appId}:
     get:
@@ -364,13 +373,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppManifestInfo"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "404":
-          $ref: "#/components/responses/Generic404"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/NotFound404"
     delete:
       security:
         - openId:
@@ -404,13 +413,13 @@ paths:
             x-correlator:
               $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "404":
-          $ref: "#/components/responses/Generic404"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/NotFound404"
         "409":
           description: Conflict
           headers:
@@ -419,7 +428,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorInfo"
+                allOf:
+                  - $ref: "#/components/schemas/ErrorInfo"
+                  - type: object
+                    properties:
+                      status:
+                        enum:
+                          - 409
+                      code:
+                        enum:
+                          - INCOMPATIBLE_STATE
               example:
                 status: 409
                 code: INCOMPATIBLE_STATE
@@ -485,11 +503,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppInstanceInfo"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "409":
           description: Conflict
           headers:
@@ -498,7 +516,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorInfo"
+                allOf:
+                  - $ref: "#/components/schemas/ErrorInfo"
+                  - type: object
+                    properties:
+                      status:
+                        enum:
+                          - 409
+                      code:
+                        enum:
+                          - ALREADY_EXISTS
               example:
                 status: 409
                 code: ALREADY_EXISTS
@@ -554,11 +581,11 @@ paths:
                 items:
                   $ref: "#/components/schemas/AppInstanceInfo"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
   /app-instances/{appInstanceId}:
     get:
       security:
@@ -593,13 +620,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppInstanceInfo"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "404":
-          $ref: "#/components/responses/Generic404"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/NotFound404"
     delete:
       security:
         - openId:
@@ -635,13 +662,13 @@ paths:
             x-correlator:
               $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "404":
-          $ref: "#/components/responses/Generic404"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/NotFound404"
 
   /deployments:
     post:
@@ -706,11 +733,11 @@ paths:
                   appDeploymentId:
                     $ref: "#/components/schemas/AppDeploymentId"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "409":
           description: Conflict
           headers:
@@ -719,7 +746,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorInfo"
+                allOf:
+                  - $ref: "#/components/schemas/ErrorInfo"
+                  - type: object
+                    properties:
+                      status:
+                        enum:
+                          - 409
+                      code:
+                        enum:
+                          - ALREADY_EXISTS
               example:
                 status: 409
                 code: ALREADY_EXISTS
@@ -767,11 +803,11 @@ paths:
                 items:
                   $ref: "#/components/schemas/AppDeploymentInfo"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
   /deployments/{appDeploymentId}:
     get:
       security:
@@ -806,13 +842,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppDeploymentInfo"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "404":
-          $ref: "#/components/responses/Generic404"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/NotFound404"
     delete:
       security:
         - openId:
@@ -842,13 +878,13 @@ paths:
             x-correlator:
               $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "404":
-          $ref: "#/components/responses/Generic404"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/NotFound404"
 
   /deployments/{appDeploymentId}/add-edge-cloud-zone:
     post:
@@ -903,13 +939,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppDeploymentInfo"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "404":
-          $ref: "#/components/responses/Generic404"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/NotFound404"
         "409":
           description: Conflict
           headers:
@@ -918,7 +954,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorInfo"
+                allOf:
+                  - $ref: "#/components/schemas/ErrorInfo"
+                  - type: object
+                    properties:
+                      status:
+                        enum:
+                          - 409
+                      code:
+                        enum:
+                          - ALREADY_EXISTS
+                          - INCOMPATIBLE_STATE
               examples:
                 ALREADY_EXISTS:
                   description: Edge Cloud Zone already part of the deployment
@@ -986,13 +1032,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppDeploymentInfo"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "404":
-          $ref: "#/components/responses/Generic404"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/NotFound404"
         "409":
           description: Conflict
           headers:
@@ -1001,7 +1047,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorInfo"
+                allOf:
+                  - $ref: "#/components/schemas/ErrorInfo"
+                  - type: object
+                    properties:
+                      status:
+                        enum:
+                          - 409
+                      code:
+                        enum:
+                          - INCOMPATIBLE_STATE
               example:
                 status: 409
                 code: INCOMPATIBLE_STATE
@@ -1059,13 +1114,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppDeploymentInfo"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "404":
-          $ref: "#/components/responses/Generic404"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/NotFound404"
         "409":
           description: Conflict
           headers:
@@ -1074,7 +1129,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorInfo"
+                allOf:
+                  - $ref: "#/components/schemas/ErrorInfo"
+                  - type: object
+                    properties:
+                      status:
+                        enum:
+                          - 409
+                      code:
+                        enum:
+                          - ALREADY_EXISTS
+                          - INCOMPATIBLE_STATE
               examples:
                 ALREADY_EXISTS:
                   description: Kubernetes cluster already part of the deployment
@@ -1141,13 +1206,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppDeploymentInfo"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "404":
-          $ref: "#/components/responses/Generic404"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/NotFound404"
         "409":
           description: Conflict
           headers:
@@ -1156,7 +1221,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorInfo"
+                allOf:
+                  - $ref: "#/components/schemas/ErrorInfo"
+                  - type: object
+                    properties:
+                      status:
+                        enum:
+                          - 409
+                      code:
+                        enum:
+                          - INCOMPATIBLE_STATE
               example:
                 status: 409
                 code: INCOMPATIBLE_STATE
@@ -1251,11 +1325,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/EdgeCloudZoneList"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
         "401":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
 components:
   securitySchemes:
     openId:
@@ -1277,83 +1351,6 @@ components:
         Correlation id for the different services
       schema:
         $ref: "#/components/schemas/XCorrelator"
-
-  responses:
-    Generic400:
-      description: Bad Request
-      headers:
-        x-correlator:
-          $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
-              - type: object
-                properties:
-                  status:
-                    enum:
-                      - 400
-                  code:
-                    enum:
-                      - INVALID_ARGUMENT
-          examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              description: Invalid Argument. Generic Syntax Exception
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
-    Generic403:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
-              - type: object
-                properties:
-                  status:
-                    enum:
-                      - 403
-                  code:
-                    enum:
-                      - PERMISSION_DENIED
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
-    Generic404:
-      description: Not found
-      headers:
-        x-correlator:
-          $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
-              - type: object
-                properties:
-                  status:
-                    enum:
-                      - 404
-                  code:
-                    enum:
-                      - NOT_FOUND
-          examples:
-            GENERIC_404_NOT_FOUND:
-              description: Resource is not found
-              value:
-                status: 404
-                code: NOT_FOUND
-                message: The specified resource is not found.
 
   callbacks:
     onAppInstanceStatusChange:
@@ -1389,15 +1386,15 @@ components:
                 x-correlator:
                   $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
             "400":
-              $ref: "#/components/responses/Generic400"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
             "401":
-              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
             "403":
-              $ref: "#/components/responses/Generic403"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
             "410":
-              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic410"
+              $ref: "../common/CAMARA_event_common.yaml#/components/responses/SinkGone410"
             "429":
-              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic429"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/TooManyRequests429"
 
     onAppDeploymentStatusChange:
       "{$request.body#/subscriptionRequest/sink}":
@@ -1431,15 +1428,15 @@ components:
                 x-correlator:
                   $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
             "400":
-              $ref: "#/components/responses/Generic400"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
             "401":
-              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
             "403":
-              $ref: "#/components/responses/Generic403"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
             "410":
-              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic410"
+              $ref: "../common/CAMARA_event_common.yaml#/components/responses/SinkGone410"
             "429":
-              $ref: "../common/CAMARA_common.yaml#/components/responses/Generic429"
+              $ref: "../common/CAMARA_common.yaml#/components/responses/TooManyRequests429"
 
   schemas:
     AccessTokenCredential:
@@ -1528,41 +1525,26 @@ components:
     SubscriptionConfig:
       description: |
         Implementation-specific configuration parameters needed by the subscription manager for acquiring events.
-        In CAMARA we have predefined attributes like `subscriptionExpireTime`, `subscriptionMaxEvents`, `initialEvent`
-        Specific event type attributes must be defined in `subscriptionDetail`
+        Extends the Commonalities-owned `ConfigBase` (`subscriptionExpireTime`, `subscriptionMaxEvents`) with the
+        API-specific `subscriptionDetail` and the optional `initialEvent` property.
         Note: if a request is performed for several event type, all subscribed event will use same `config` parameters.
+      allOf:
+        - $ref: "../common/CAMARA_event_common.yaml#/components/schemas/ConfigBase"
+        - type: object
+          required:
+            - subscriptionDetail
+          properties:
+            subscriptionDetail:
+              $ref: "#/components/schemas/CreateSubscriptionDetail"
+            initialEvent:
+              type: boolean
+              description: |
+                Set to `true` by API consumer if consumer wants to get an event as soon as the subscription is created and current situation reflects event request.
+                Example: If initialEvent is set to true and application is in a specific status, an event is triggered.
+
+    CreateSubscriptionDetail:
+      description: The detail of the requested event subscription.
       type: object
-      required:
-        - subscriptionDetail
-      properties:
-        subscriptionDetail:
-          description: The detail of the requested event subscription.
-          type: object
-        subscriptionExpireTime:
-          type: string
-          maxLength: 64
-          format: date-time
-          example: 2023-01-17T13:18:23.682Z
-          description:
-            The subscription expiration time (in date-time format) requested by
-            the API consumer. It must follow [RFC
-            3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and
-            must have time zone.
-        subscriptionMaxEvents:
-          type: integer
-          format: int32
-          description:
-            Identifies the maximum number of event reports to be generated
-            (>=1) requested by the API consumer - Once this number is reached,
-            the subscription ends.
-          minimum: 1
-          maximum: 2147483647
-          example: 5
-        initialEvent:
-          type: boolean
-          description: |
-            Set to `true` by API consumer if consumer wants to get an event as soon as the subscription is created and current situation reflects event request.
-            Example: If initialEvent is set to true and application is in a specific status, an event is triggered.
 
     SinkCredential:
       description: A sink credential provides authentication or authorization
