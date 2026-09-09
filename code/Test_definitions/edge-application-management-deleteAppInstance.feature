@@ -47,6 +47,18 @@ Feature: CAMARA Edge Application Management API, vwip - Operation deleteAppInsta
     And the response property "$.status" is 404
     And the response property "$.code" is "NOT_FOUND"
     And the response property "$.message" contains a user friendly text
+  # Error 409
+  @eam_deleteAppInstance_409.1_incompatible_state
+  Scenario: Delete an application instance that is part of an application deployment
+    Given there is an application instance created as part of a deployment by operation createAppDeployment
+    And the request path parameter "$.appInstanceId" is set to a valid application instance ID belonging to that deployment
+    When the request "deleteAppInstance" is sent
+    Then the response status code is 409
+    And the response header "Content-Type" is "application/json"
+    And the response header "x-correlator" has same value as the request header "x-correlator"
+    And the response property "$.status" is 409
+    And the response property "$.code" is "INCOMPATIBLE_STATE"
+    And the response property "$.message" contains a user friendly text
   # Error 401
   @eam_deleteAppInstance_401.1_missing_access_token
   Scenario: Missing access token

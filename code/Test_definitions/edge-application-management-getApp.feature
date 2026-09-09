@@ -32,7 +32,7 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getApp
     And the response property "$appProvider" has the value provided for submitApp
     And the response property "$version" has the value provided for submitApp
     And the response property "$packageType" has the value provided for submitApp
-    And the response property "$appRepo" has the value provided for submitApp
+    And the response property "$repository" has the value provided for submitApp
     And the response property "$requiredResources" has the value provided for submitApp
     And the response property "$componentSpec" has the value provided for submitApp
     And the response property "$operatingSystem" exists only if provided for submitApp and with the same value

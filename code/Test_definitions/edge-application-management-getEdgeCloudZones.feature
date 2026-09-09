@@ -61,17 +61,17 @@ Feature: CAMARA Edge Application Management API, vwip - Operation getEdgeCloudZo
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And information of Edge Cloud Zones of "$.edgeCloudRegion" is returned
     And the response body complies with the OAS schema at "/components/schemas/EdgeCloudZoneList"
-  #/edge-cloud-zones	GET	200	filtered by clusterRef
-  @eam_getEdgeCloudZones_05_success_scenario_filtered_by_clusterRef
+  #/edge-cloud-zones	GET	200	filtered by kubernetesClusterRef
+  @eam_getEdgeCloudZones_05_success_scenario_filtered_by_kubernetesClusterRef
   Scenario: Get information of the Edge Cloud Zone containing a given Kubernetes cluster
     Given There are at least one Edge Cloud Zones available with Kubernetes clusters
-    And the request query parameter "$.clusterRef" is set to a valid kubernetes cluster
+    And the request query parameter "$.kubernetesClusterRef" is set to a valid kubernetes cluster
     When the request "getEdgeCloudZones" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response property "$.edgeCloudZones" contains exactly one Edge Cloud Zone
-    And the response property "$.edgeCloudZones[0].clusters" contains the value provided for "$.clusterRef"
+    And the response property "$.edgeCloudZones[0].clusters" contains the value provided for "$.kubernetesClusterRef"
     And the response body complies with the OAS schema at "/components/schemas/EdgeCloudZoneList"
   #/edge-cloud-zones	GET	200	filtered by status
   @eam_getEdgeCloudZones_06_success_scenario_filtered_by_status
