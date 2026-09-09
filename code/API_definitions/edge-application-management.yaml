@@ -119,6 +119,39 @@ info:
     remains running, call `deleteApp` to remove its metadata from the
     Edge Cloud Provider; `deleteApp` is rejected while any instance is
     still running.
+    # Application Instance vs. Application Deployment
+    The API offers two ways to instantiate an application, depending on
+    whether the resulting instance(s) need to be managed individually or
+    as a single, consistently-maintained unit:
+    * `createAppInstance` creates a single, standalone application
+    instance in one Edge Cloud Zone or Kubernetes cluster. It is intended
+    for instances that are managed on their own (e.g. a one-off or
+    short-lived instance, or one used for testing), independently of any
+    other instance of the same application.
+    * `createAppDeployment` creates and maintains one or more application
+    instances, across one or more Edge Cloud Zones or Kubernetes
+    clusters, as a single managed unit (an Application Deployment). The
+    set of zones/clusters can subsequently be grown or shrunk via
+    `addEdgeCloudZone`/`removeEdgeCloudZone` or
+    `addKubernetesCluster`/`removeKubernetesCluster`.
+
+    An application instance created as part of a deployment is not
+    independently manageable: it MUST be removed exclusively through the
+    deployment-scoped operations above, or by deleting the whole
+    deployment with `deleteAppDeployment`. Calling `deleteAppInstance` on
+    such an instance results in a `409 INCOMPATIBLE_STATE` response,
+    since doing so outside of the deployment's own operations would leave
+    the deployment's recorded Edge Cloud Zones/Kubernetes clusters
+    inconsistent with its actual running instances. `deleteAppInstance`
+    only applies to standalone instances created via `createAppInstance`.
+
+    Note that `getAppInstance`/`getAppInstances` return the same
+    `AppInstanceInfo` representation regardless of whether the instance
+    is standalone or belongs to a deployment; the API does not expose an
+    `appDeploymentId` back-reference on the instance itself. To determine
+    whether a specific instance belongs to a deployment, and which one,
+    look it up in the `appInstances` property of the application's
+    deployments (`getAppDeployments`/`getAppDeployment`).
 
     # Kubernetes vs. compute/memory/storage applications
     Applications declare their infrastructure requirements through the
@@ -169,16 +202,18 @@ info:
     * __getApp__ - Retrieves the information of a given application.
 
     __Application Instance Management__
-    * __createAppInstance__  Request the Edge Cloud Provider to instatiate
-    an instance of an application in a given Edge Cloud Zone,
-    if this parameter is not set, the Edge Cloud Provider will instantiate
-    the applications in all the Edge Cloud Zones.
+    * __createAppInstance__ - Requests the Edge Cloud Provider to
+    instantiate a single, standalone instance of an application in one
+    Edge Cloud Zone or Kubernetes cluster. For multiple, jointly-managed
+    instances, use __createAppDeployment__ instead.
     * __getAppInstance__ - Retrieves the information of a given application
     instance.
     * __getAppInstances__  Retrieves the list with information of the instances
     related to a given application.
-    * __deleteAppInstance__ - Removes a given application instance from an Edge
-    Cloud Zone.
+    * __deleteAppInstance__ - Removes a given standalone application
+    instance. Not applicable to an instance that is part of a deployment;
+    use __removeEdgeCloudZone__/__removeKubernetesCluster__ or
+    __deleteAppDeployment__ for those instead.
 
     __Application Deployment Management__
     * __createAppDeployment__ - Requests the Edge Cloud Provider to create and
@@ -221,12 +256,22 @@ info:
     principles of transparency and user-centric data control.
 
     # API documentation
-    Two operations have been defined in Edge Application Management API.
+    Four resource groups have been defined in Edge Application Management API.
 
     *__Application__* - The Application Provider submit application metadata to
     the Edge Cloud Platform. The Edge Cloud Platform generates an appId for that
     metadata that will be used to instantiate the application within
     the Edge Cloud Zone.
+
+    *__Application Instance__* - A single, standalone instance of an
+    application, created and managed independently of any other instance
+    of the same application (see "Application Instance vs. Application
+    Deployment" above).
+
+    *__Application Deployment__* - One or more instances of an
+    application, created and maintained as a single managed unit across
+    one or more Edge Cloud Zones or Kubernetes clusters (see "Application
+    Instance vs. Application Deployment" above).
 
     *__Edge Cloud__* - Retrieves all the Edge Cloud Zones available according to
     some defined parameters where an application can be instantiated.
@@ -503,8 +548,22 @@ paths:
         - Application
       summary: Instantiation of an Application
       description: |
-        Ask the Edge Cloud Platform to instantiate an application to an
-        Edge Cloud Zone.
+        Ask the Edge Cloud Platform to instantiate a single, standalone
+        instance of an application in one Edge Cloud Zone or Kubernetes
+        cluster.
+
+        Use this operation for application instances that are managed
+        individually and do not need to be kept consistent as a set across
+        several Edge Cloud Zones or clusters (e.g. a one-off or
+        short-lived instance, or one used for testing). To create and
+        maintain several instances of the same application as a single
+        managed unit across multiple Edge Cloud Zones and/or Kubernetes
+        clusters, use `createAppDeployment` instead: instances belonging
+        to a deployment are added, removed and terminated exclusively
+        through the deployment-scoped operations (`addEdgeCloudZone`,
+        `removeEdgeCloudZone`, `addKubernetesCluster`,
+        `removeKubernetesCluster`, `deleteAppDeployment`), not through
+        `deleteAppInstance` (see its description for details).
 
         Exactly one of `edgeCloudZoneId` or `kubernetesClusterRef` MUST be
         specified, never both. `kubernetesClusterRef` is mandatory when the
@@ -677,8 +736,19 @@ paths:
         - Application
       summary: Terminate an Application Instance
       description: |
-        Terminate a running instance of an application within
-        an Edge Cloud Zone
+        Terminate a standalone running instance of an application within
+        an Edge Cloud Zone or Kubernetes cluster.
+
+        Only applicable to application instances created directly via
+        `createAppInstance`. An application instance that is part of an
+        application deployment (i.e. one created by, or added to, a
+        deployment via `createAppDeployment`, `addEdgeCloudZone` or
+        `addKubernetesCluster`) MUST be removed exclusively through the
+        deployment-scoped operations (`removeEdgeCloudZone`,
+        `removeKubernetesCluster`, or `deleteAppDeployment` to terminate
+        the whole deployment), so that the deployment's state stays
+        consistent with its actual instances. Calling this operation on
+        such an instance results in a `409 INCOMPATIBLE_STATE` response.
       operationId: deleteAppInstance
       parameters:
         - $ref: "#/components/parameters/x-correlator"
@@ -711,6 +781,19 @@ paths:
           $ref: "#/components/responses/Generic403"
         "404":
           $ref: "#/components/responses/Generic404"
+        "409":
+          description: Conflict
+          headers:
+            x-correlator:
+              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              example:
+                status: 409
+                code: INCOMPATIBLE_STATE
+                message: "Application instance is part of a deployment; use removeEdgeCloudZone, removeKubernetesCluster or deleteAppDeployment instead"
 
   /deployments:
     post:
@@ -721,8 +804,21 @@ paths:
         - Application
       summary: Deploy an Application
       description: |
-        Ask the Edge Cloud Platform to instantiate an application to several
-        Edge Cloud Zones.
+        Ask the Edge Cloud Platform to instantiate an application as a
+        single managed unit across one or more Edge Cloud Zones or
+        Kubernetes clusters, and to keep it consistently instantiated
+        there for as long as the deployment exists.
+
+        Use this operation whenever more than one instance of the
+        application needs to be created and managed together, or whenever
+        the set of Edge Cloud Zones/clusters an application runs on needs
+        to evolve over time (via `addEdgeCloudZone`/`removeEdgeCloudZone`
+        or `addKubernetesCluster`/`removeKubernetesCluster`). For a
+        single, standalone application instance that does not need this
+        kind of lifecycle management, use `createAppInstance` instead.
+        Instances created as part of a deployment can only be terminated
+        through the deployment-scoped operations, not through
+        `deleteAppInstance` (see its description for details).
 
         Exactly one of `edgeCloudZones` or `kubernetesClusterRefs` MUST be
         specified, never both. `kubernetesClusterRefs` is mandatory when the
