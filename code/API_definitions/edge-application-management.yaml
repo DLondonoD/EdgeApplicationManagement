@@ -1732,6 +1732,14 @@ components:
             credentialType:
               enum:
                 - ACCESSTOKEN
+            accessTokenExpiresUtc:
+              description: |
+                An absolute (UTC) timestamp at which the token shall be considered expired.
+                Token expiration SHOULD occur after the expiration of the application instance or deployment,
+                allowing the client to be notified of any changes during its existence.
+                If the token expires while the application instance or deployment is still active,
+                the client will stop receiving notifications.
+                It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
 
     AccessEndpoint:
       type: object
