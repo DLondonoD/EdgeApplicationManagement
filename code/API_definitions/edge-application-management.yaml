@@ -399,27 +399,7 @@ paths:
         "403":
           $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "409":
-          description: Conflict
-          headers:
-            x-correlator:
-              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/ErrorInfo"
-                  - type: object
-                    properties:
-                      status:
-                        enum:
-                          - 409
-                      code:
-                        enum:
-                          - ALREADY_EXISTS
-              example:
-                status: 409
-                code: ALREADY_EXISTS
-                message: "App already exists"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/AlreadyExists409"
     get:
       security:
         - openId:
@@ -602,7 +582,8 @@ paths:
         Platform does not support event notification delivery, the request
         is rejected with `422 EVENT_NOTIFICATIONS_NOT_SUPPORTED` and the
         application instance is NOT created; the API consumer may retry
-        without `subscriptionRequest`.
+        without `subscriptionRequest`. If event delivery is accepted,
+        `sink` is echoed back in the response.
       operationId: createAppInstance
       parameters:
         - $ref: "#/components/parameters/x-correlator"
@@ -637,33 +618,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/AppInstanceInfo"
         "400":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
+          $ref: "#/components/responses/CreateAppInstanceBadRequest400"
         "401":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
           $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "409":
-          description: Conflict
-          headers:
-            x-correlator:
-              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/ErrorInfo"
-                  - type: object
-                    properties:
-                      status:
-                        enum:
-                          - 409
-                      code:
-                        enum:
-                          - ALREADY_EXISTS
-              example:
-                status: 409
-                code: ALREADY_EXISTS
-                message: "Application already instantiated in the given Edge Cloud Zone"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/AlreadyExists409"
         "422":
           $ref: "#/components/responses/EventNotificationsNotSupported422"
       callbacks:
@@ -883,7 +844,8 @@ paths:
         Platform does not support event notification delivery, the request
         is rejected with `422 EVENT_NOTIFICATIONS_NOT_SUPPORTED` and the
         application deployment is NOT created; the API consumer may retry
-        without `subscriptionRequest`.
+        without `subscriptionRequest`. If event delivery is accepted,
+        `sink` is echoed back in the response.
       operationId: createAppDeployment
       parameters:
         - $ref: "#/components/parameters/x-correlator"
@@ -921,33 +883,13 @@ paths:
                   appDeploymentId:
                     $ref: "#/components/schemas/AppDeploymentId"
         "400":
-          $ref: "../common/CAMARA_common.yaml#/components/responses/BadRequest400"
+          $ref: "#/components/responses/CreateAppDeploymentBadRequest400"
         "401":
           $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
           $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "409":
-          description: Conflict
-          headers:
-            x-correlator:
-              $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/ErrorInfo"
-                  - type: object
-                    properties:
-                      status:
-                        enum:
-                          - 409
-                      code:
-                        enum:
-                          - ALREADY_EXISTS
-              example:
-                status: 409
-                code: ALREADY_EXISTS
-                message: "Deployment already exists"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/AlreadyExists409"
         "422":
           $ref: "#/components/responses/EventNotificationsNotSupported422"
       callbacks:
@@ -1551,6 +1493,76 @@ components:
         $ref: "#/components/schemas/XCorrelator"
 
   responses:
+    CreateAppInstanceBadRequest400:
+      description: Problem with the client request
+      headers:
+        x-correlator:
+          $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 400
+                  code:
+                    enum:
+                      - INVALID_ARGUMENT
+                      - INVALID_CREDENTIAL
+                      - INVALID_TOKEN
+                      - INVALID_SINK
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              $ref: "../common/CAMARA_common.yaml#/components/examples/GENERIC_400_INVALID_ARGUMENT"
+            GENERIC_400_INVALID_SINK:
+              $ref: "../common/CAMARA_event_common.yaml#/components/examples/GENERIC_400_INVALID_SINK"
+            GENERIC_400_INVALID_TOKEN:
+              $ref: "../common/CAMARA_event_common.yaml#/components/examples/GENERIC_400_INVALID_TOKEN"
+            GENERIC_400_INVALID_CREDENTIAL:
+              description: Invalid sink credential type
+              value:
+                status: 400
+                code: INVALID_CREDENTIAL
+                message: Only Access token is supported
+
+    CreateAppDeploymentBadRequest400:
+      description: Problem with the client request
+      headers:
+        x-correlator:
+          $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 400
+                  code:
+                    enum:
+                      - INVALID_ARGUMENT
+                      - INVALID_CREDENTIAL
+                      - INVALID_TOKEN
+                      - INVALID_SINK
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              $ref: "../common/CAMARA_common.yaml#/components/examples/GENERIC_400_INVALID_ARGUMENT"
+            GENERIC_400_INVALID_SINK:
+              $ref: "../common/CAMARA_event_common.yaml#/components/examples/GENERIC_400_INVALID_SINK"
+            GENERIC_400_INVALID_TOKEN:
+              $ref: "../common/CAMARA_event_common.yaml#/components/examples/GENERIC_400_INVALID_TOKEN"
+            GENERIC_400_INVALID_CREDENTIAL:
+              description: Invalid sink credential type
+              value:
+                status: 400
+                code: INVALID_CREDENTIAL
+                message: Only Access token is supported
+
     EventNotificationsNotSupported422:
       description: Unprocessable Content
       headers:
@@ -1732,6 +1744,13 @@ components:
             credentialType:
               enum:
                 - ACCESSTOKEN
+            accessTokenExpiresUtc:
+              description: |
+                An absolute (UTC) timestamp at which the token shall be considered expired.
+                Token expiration SHOULD occur after the expiration of the application instance
+                or deployment, allowing the client to be notified of any changes during its
+                existence. If the token expires while the application instance or deployment
+                is still active, the client will stop receiving notifications.
 
     AccessEndpoint:
       type: object
@@ -1875,6 +1894,13 @@ components:
           $ref: "#/components/schemas/AppDeploymentId"
         appId:
           $ref: "#/components/schemas/AppId"
+        sink:
+          description: |
+            The sink URL registered for event notifications on this deployment.
+            Present in the response whenever `subscriptionRequest.sink` was
+            provided in the deployment creation request.
+          allOf:
+            - $ref: "../common/CAMARA_event_common.yaml#/components/schemas/Sink"
         edgeCloudZones:
           description: |
             List of Edge Cloud Zones where the application is deployed.
@@ -1916,6 +1942,13 @@ components:
           $ref: "#/components/schemas/AppInstanceId"
         appProvider:
           $ref: "#/components/schemas/AppProvider"
+        sink:
+          description: |
+            The sink URL registered for event notifications on this instance.
+            Present in the response whenever `subscriptionRequest.sink` was
+            provided in the instance creation request.
+          allOf:
+            - $ref: "../common/CAMARA_event_common.yaml#/components/schemas/Sink"
         status:
           description: |
             Status of the application instance (default is 'unknown'):
