@@ -1683,7 +1683,7 @@ components:
         sink:
           $ref: "../common/CAMARA_event_common.yaml#/components/schemas/Sink"
         sinkCredential:
-          $ref: "#/components/schemas/SinkCredential"
+          $ref: "#/components/schemas/AppEventSinkCredential"
         types:
           description: |
             Camara Event types eligible to be delivered by this subscription.
@@ -1720,7 +1720,7 @@ components:
       description: The detail of the requested event subscription.
       type: object
 
-    SinkCredential:
+    AppEventSinkCredential:
       description: |
         A sink credential provides authentication or authorization
         information necessary to enable delivery of events to a target.
