@@ -1723,17 +1723,20 @@ components:
               type: object
               required:
                 - appDeploymentId
+                - appInstanceId
                 - status
               properties:
                 appDeploymentId:
                   $ref: "#/components/schemas/AppDeploymentId"
+                appInstanceId:
+                  $ref: "#/components/schemas/AppInstanceId"
                 status:
                   description: |
-                    Status of the application deployment:
-                    - `ready`: The deployment is running and available.
-                    - `instantiating`: The deployment is being created.
-                    - `failed`: Instantiation failed, or the deployment stopped running unexpectedly.
-                    - `terminating`: The deployment is being terminated.
+                    Status of the application instance within the deployment:
+                    - `ready`: The instance is running and available.
+                    - `instantiating`: The instance is being created.
+                    - `failed`: Instantiation failed, or the instance stopped running unexpectedly.
+                    - `terminating`: The instance is being terminated.
                     - `unknown`: The status could not be determined.
                   type: string
                   enum:
