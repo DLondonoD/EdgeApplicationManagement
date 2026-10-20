@@ -1900,7 +1900,13 @@ components:
           allOf:
             - $ref: "../common/CAMARA_event_common.yaml#/components/schemas/Sink"
         sinkCredential:
-          $ref: "../common/CAMARA_event_common.yaml#/components/schemas/SinkCredential"
+          description: |
+            For `ACCESSTOKEN`, `accessTokenExpiresUtc` is an absolute (UTC) timestamp at which the token shall be considered expired.
+            Token expiration SHOULD occur after the expiration of the application deployment, allowing the client to be notified
+            of any changes during its existence. If the token expires while the application deployment is still active,
+            the client will stop receiving notifications.
+          allOf:
+            - $ref: "../common/CAMARA_event_common.yaml#/components/schemas/SinkCredential"
 
     AppDeploymentInfo:
       description: Information about the application deployment.
