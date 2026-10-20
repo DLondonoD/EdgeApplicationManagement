@@ -1940,6 +1940,32 @@ components:
             request.
           allOf:
             - $ref: "../common/CAMARA_event_common.yaml#/components/schemas/SinkCredential"
+        status:
+          description: |
+            Aggregate status of the application deployment, derived from the
+            status of its member application instances (default is
+            'unknown'):
+            - `ready`: All instances are `ready`.
+            - `instantiating`: At least one instance is `instantiating` and
+              none is `failed`.
+            - `failed`: At least one instance is `failed`.
+            - `terminating`: At least one instance is `terminating` and none
+              is `failed`.
+            - `unknown`: The aggregate status could not be determined (e.g.
+              no instances yet, or a combination of instance statuses not
+              covered above).
+
+            This is a derived value; it is not authoritative for any
+            individual instance. For per-instance detail, see `appInstances`
+            and `getAppInstance`.
+          type: string
+          enum:
+            - ready
+            - instantiating
+            - failed
+            - terminating
+            - unknown
+          default: unknown
         edgeCloudZones:
           description: |
             List of Edge Cloud Zones where the application is deployed.
