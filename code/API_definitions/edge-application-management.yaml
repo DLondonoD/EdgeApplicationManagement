@@ -1944,16 +1944,15 @@ components:
           description: |
             Aggregate status of the application deployment, derived from the
             status of its member application instances (default is
-            'unknown'):
-            - `ready`: All instances are `ready`.
-            - `instantiating`: At least one instance is `instantiating` and
-              none is `failed`.
-            - `failed`: At least one instance is `failed`.
-            - `terminating`: At least one instance is `terminating` and none
-              is `failed`.
-            - `unknown`: The aggregate status could not be determined (e.g.
-              no instances yet, or a combination of instance statuses not
-              covered above).
+            'unknown'). The first matching rule applies:
+            - `terminating`: The deployment is being deleted (`deleteAppDeployment`).
+            - `ready`: All instances are `ready`, and there is at least one.
+            - `degraded`: Some instances are `ready`, but not all (for example
+              one has failed, or a zone or cluster is being added or removed).
+            - `failed`: No instance is `ready` and at least one has `failed`.
+            - `instantiating`: The deployment is still being created and no
+              instance is `ready` or `failed` yet.
+            - `unknown`: The status could not be determined.
 
             This is a derived value; it is not authoritative for any
             individual instance. For per-instance detail, see `appInstances`
@@ -1961,6 +1960,7 @@ components:
           type: string
           enum:
             - ready
+            - degraded
             - instantiating
             - failed
             - terminating
